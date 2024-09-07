@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  spotify_clone
-//
-//  Created by Kieran Reid on 06/09/2024.
-//
-
 import SwiftUI
 
 struct Album {
