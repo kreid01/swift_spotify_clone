@@ -3,49 +3,169 @@ import SwiftUI
 
 struct SearchView: View {
     @State var search: String = ""
-
+    @FocusState private var searchFieldIsFocused;
+    @State var searching: Bool = false
+    @StateObject var searchViewModel: SearchViewModel
+    
+    init() {
+        _searchViewModel = StateObject(wrappedValue: SearchViewModel())
+    }
+    
     var body: some View {
-        VStack {
-            HStack {
-                Circle()
-                    .frame(width: 32, height: 32)
-                    .padding(.leading, 20)
-                    .foregroundStyle(.white)
-                Text("Search").foregroundStyle(.white)
-                    .fontWeight(.bold)
-                    .font(.system(size: 24))
-                Spacer()
-                Image(systemName: "camera")
-                    .foregroundColor(.white)
-                    .padding(.trailing, 20)
-            }
-
-            TextField("", text: $search).frame(height: 45)
-                .background(.white)
-                .cornerRadius(5)
-                .padding(.horizontal, 15)
-                .overlay {
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.gray)
-                            .padding(.leading, 32)
-                        Text("What do you want to listen to?")
-                            .padding(.leading, 8)
-                            .foregroundStyle(.gray)
-                        Spacer()
-                    }
+        NavigationView {
+            if searching {
+                VStack {
+                    VStack {
+                        HStack {
+                            TextField("", text: $search).frame(height: 30)
+                                .focused($searchFieldIsFocused)
+                                .foregroundColor(.white)
+                                .padding(.leading, 10)
+                                .background(Color(red: 53/255, green: 53/255, blue: 53/255))
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.asciiCapable)
+                                .onChange(of: search, perform: { value in
+                                    if value != "" {
+                                        searchViewModel.search(search: value)
+                                    }
+                                })
+                                .padding(10)
+                                .overlay {
+                                    if search == "" {
+                                        HStack {
+                                            Image(systemName: "magnifyingglass")
+                                                .foregroundColor(.gray)
+                                                .padding(.leading, 20)
+                                            Text("What do you want to listen to?")
+                                                .foregroundStyle(.gray)
+                                            Spacer()
+                                        }
+                                    }
+                                }
+                            
+                            Text("Cancel")
+                                .foregroundStyle(.white)
+                                .padding(.trailing, 15)
+                                .onTapGesture {
+                                    self.searching = false
+                                    self.search = ""
+                                }
+                        }
+                        .padding(.bottom, 10)
+                        .background(Color(red: 31/225, green: 31/255, blue: 31/255))
+                        
+                        Text("Recent searches")
+                            .fontWeight(.bold)
+                            .font(.system(size: 24))
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading, 15)
+                        
+                        ScrollView {
+                            if let albums = searchViewModel.data?.albums {
+                                ForEach(albums.items) { item in
+                                    NavigationLink(destination: LPView(id: item.id)) {
+                                        HStack {
+                                            if let imageUrl = URL(string: item.images.first?.url ?? "") {
+                                                CacheAsyncImage(url: imageUrl) { phase in
+                                                    switch phase {
+                                                        case .success(let image):
+                                                            image
+                                                                .resizable()
+                                                                .scaledToFit()
+                                                                .frame(width: 60)
+                                                        case .empty:
+                                                            ProgressView()
+                                                        case .failure:
+                                                            ProgressView()
+                                                        @unknown default:
+                                                            fatalError("Unknown image loading phase")
+                                                    }
+                                                }
+                                            } else {
+                                                ProgressView()
+                                            }
+                                            
+                                            VStack {
+                                                Text(item.name)
+                                                    .fontWeight(.bold)
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                                Text("Album - \(item.artists[0].name)")
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                            }.foregroundStyle(.white)
+                                                .offset(x: -10)
+                                            
+                                            Image(systemName: "xmark")
+                                                .foregroundStyle(.gray)
+                                                .font(.system(size: 20))
+                                                .padding(.trailing, 12)
+                                        }.frame(height: 70)
+                                            .frame(height: 70)
+                                    }
+                                }
+                            }
+                            Text("Clear recent searches")
+                                .font(.system(size: 16))
+                                .frame(width: 195, height: 40)
+                                .background(RoundedRectangle(cornerRadius: 20).strokeBorder(Color.white, lineWidth: 1))
+                                .foregroundColor(.white)
+                        }
+                        
+                    }.background(Color(red: 25/255, green: 25/255, blue: 25/255))
                 }
-
-            ScrollView {
-                SearchViewTitle(title: "Start browsing")
-                StartBroswing()
-                SearchViewTitle(title: "Browse all")
-                BrowseAll()
+            } else {
+                VStack {
+                    HStack {
+                        Circle()
+                            .frame(width: 32, height: 32)
+                            .padding(.leading, 20)
+                            .foregroundStyle(.white)
+                        Text("Search").foregroundStyle(.white)
+                            .fontWeight(.bold)
+                            .textInputAutocapitalization(.never)
+                            .keyboardType(.asciiCapable)
+                            .font(.system(size: 24))
+                        Spacer()
+                        Image(systemName: "camera")
+                            .foregroundColor(.white)
+                            .padding(.trailing, 20)
+                    }
+                    
+                    ZStack(alignment: .leading) {
+                        TextField("", text: $search)
+                            .frame(height: 45)
+                            .background(Color.white)
+                            .cornerRadius(5)
+                            .padding(.horizontal, 15)
+                        
+                        HStack {
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(.gray)
+                                .padding(.leading, 32)
+                            Text("What do you want to listen to?")
+                                .padding(.leading, 8)
+                                .foregroundStyle(.gray)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 15)
+                        .onTapGesture {
+                            self.searching = true
+                            self.searchFieldIsFocused = true
+                        }
+                    }
+                    
+                    ScrollView {
+                        SearchViewTitle(title: "Start browsing")
+                        StartBroswing()
+                        SearchViewTitle(title: "Browse all")
+                        BrowseAll()
+                    }
+                }.background(Color(red: 25/255, green: 25/255, blue: 25/255))
             }
-        }.background(Color(red: 25/255, green: 25/255, blue: 25/255))
+        }
     }
 }
-
+    
 func getColour(index: Int) -> Color {
     switch index {
         case 0:
@@ -62,14 +182,14 @@ func getColour(index: Int) -> Color {
             return .indigo
     }
 }
-
+    
 #Preview {
     SearchView()
 }
-
+    
 struct SearchViewTitle: View {
     @State var title: String
-
+        
     var body: some View {
         Text(title)
             .foregroundStyle(.white)
@@ -78,15 +198,15 @@ struct SearchViewTitle: View {
             .padding(20)
     }
 }
-
+    
 struct StartBroswing: View {
     var mediaTypes = ["Music", "Podcasts", "Audiobooks", "Live Events", "Courses"]
-
+        
     var gridLayout: [GridItem] = [
         GridItem(.fixed(180)),
         GridItem(.fixed(180)),
     ]
-
+        
     var body: some View {
         LazyVGrid(columns: gridLayout) {
             ForEach(mediaTypes, id: \.self) {
@@ -102,6 +222,7 @@ struct StartBroswing: View {
                 .frame(width: 170, height: 60)
                 .background(getColour(index: mediaTypes.firstIndex(of: type) ?? 1))
                 .padding(.vertical, 5)
+                .cornerRadius(10)
             }
         }
     }
