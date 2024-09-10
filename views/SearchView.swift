@@ -88,9 +88,11 @@ struct SearchView: View {
                                             
                                             VStack {
                                                 Text(item.name)
+                                                    .lineLimit(1)
                                                     .fontWeight(.bold)
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                                 Text("Album - \(item.artists[0].name)")
+                                                    .lineLimit(1)
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                             }.foregroundStyle(.white)
                                                 .offset(x: -10)
