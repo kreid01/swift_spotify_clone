@@ -9,7 +9,7 @@ class ArtistViewModel: ObservableObject {
         }
 
         var request = URLRequest(url: url)
-        request.setValue("Bearer BQCLpitg8Nt6cZQNdie60Ws8IHPkxhVoDcGy6ZyGA7tmgIe7To_enW-FPlT34db-S8DzkbFmON--QGaCtZmSBmfmmvR9yELpLfNT044j1R8rCr3Ug1A", forHTTPHeaderField: "Authorization")
+        request.setValue(token, forHTTPHeaderField: "Authorization")
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, _, error in
             guard let data = data, error == nil else {
                 return

@@ -3,7 +3,7 @@ import Foundation
 struct SearchSpotifyAlbum: Decodable, Identifiable {
     let total_tracks: Int
     let id: String
-    let images: [AlbumImage]
+    let images: [AlbumImage]?
     let name: String
     let release_date: String
     let artists: [Artist]
@@ -26,7 +26,7 @@ class SearchViewModel: ObservableObject {
         }
 
         var request = URLRequest(url: url)
-        request.setValue("Bearer BQCLMDkm6C8eIN6xIeMnu0T2EA51wWFHaTLORjtq88aSzUf0szyIwvOf677l_V0ZisHaRYAZw9LWgwfmEaSYgOUYktA2_guB7h-6DqyIWTPt24Hg7t8", forHTTPHeaderField: "Authorization")
+        request.setValue(token, forHTTPHeaderField: "Authorization")
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, _, error in
             guard let data = data, error == nil else {
                 return

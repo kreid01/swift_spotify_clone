@@ -10,20 +10,22 @@ struct AlbumHGridView: View {
                     album in
                     NavigationLink(destination: LPView(id: album.id)) {
                         VStack {
-                            CacheAsyncImage(url: URL(string: album.images[0].url)!) {
-                                phase in
-                                switch phase {
-                                    case .success(let image):
-                                        image
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 90)
-                                    case .empty:
-                                        ProgressView()
-                                    case .failure:
-                                        ProgressView()
-                                    @unknown default:
-                                        fatalError()
+                            if let images = album.images {
+                                CacheAsyncImage(url: URL(string: images[0].url)!) {
+                                    phase in
+                                    switch phase {
+                                        case .success(let image):
+                                            image
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 90)
+                                        case .empty:
+                                            ProgressView()
+                                        case .failure:
+                                            ProgressView()
+                                        @unknown default:
+                                            fatalError()
+                                    }
                                 }
                             }
 

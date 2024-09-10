@@ -19,7 +19,7 @@ struct SearchTrack: Decodable {
     let type: String
 }
 
-struct TrackArtist: Decodable {
+struct TrackArtist: Decodable, Hashable, Identifiable {
     let name: String
     let id: String
 }
@@ -31,10 +31,9 @@ class TrackViewModel: ObservableObject {
         guard let url = URL(string: "https://api.spotify.com/v1/search?q=artist:\(artist)&type=track") else {
             return
         }
-        print(url)
 
         var request = URLRequest(url: url)
-        request.setValue("Bearer BQCLpitg8Nt6cZQNdie60Ws8IHPkxhVoDcGy6ZyGA7tmgIe7To_enW-FPlT34db-S8DzkbFmON--QGaCtZmSBmfmmvR9yELpLfNT044j1R8rCr3Ug1A", forHTTPHeaderField: "Authorization")
+        request.setValue(token, forHTTPHeaderField: "Authorization")
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, _, error in
             guard let data = data, error == nil else {
                 return

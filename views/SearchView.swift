@@ -66,8 +66,8 @@ struct SearchView: View {
                                 ForEach(albums.items) { item in
                                     NavigationLink(destination: LPView(id: item.id)) {
                                         HStack {
-                                            if let imageUrl = URL(string: item.images.first?.url ?? "") {
-                                                CacheAsyncImage(url: imageUrl) { phase in
+                                            if let imageUrl = item.images?.first?.url {
+                                                CacheAsyncImage(url: URL(string: imageUrl)!) { phase in
                                                     switch phase {
                                                         case .success(let image):
                                                             image

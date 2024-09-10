@@ -14,7 +14,7 @@ class ViewModel: ObservableObject {
         }
 
         var request = URLRequest(url: url)
-        request.setValue("Bearer BQD0PCv-XlqPY4jOBpupYqTcEMmEhVe04h9p-kfOYuqy12Am398g2MFQIJWuRUMEHcFhDoOVrY8FvUXTN5ggxgPnnX-eCVTWlT05w7IGG-IfiTs2CbM", forHTTPHeaderField: "Authorization")
+        request.setValue(token, forHTTPHeaderField: "Authorization")
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, _, error in
             guard let data = data, error == nil else {
                 return

@@ -4,28 +4,35 @@ struct ArtistView: View {
     @State var id: String
     @StateObject var artistViewModel = ArtistViewModel()
     @StateObject var trackViewModel = TrackViewModel()
+    @StateObject var searchViewModel = SearchViewModel()
+    @StateObject var playlistViewModel = PlaylistViewModel()
 
     var body: some View {
         NavigationView {
             ScrollView {
-                Spacer(minLength: 90)
+                Spacer(minLength: 50)
                 if let artist = artistViewModel.data {
-                    CacheAsyncImage(url: URL(string: artist.images[0].url)!) {
-                        phase in
-                        switch phase {
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .frame(width: 400, height: 400)
-                            case .empty:
-                                ProgressView()
-                            case .failure:
-                                ProgressView()
-                            @unknown default:
-                                fatalError()
+                    if let images = artist.images {
+                        CacheAsyncImage(url: URL(string: images[0].url)!) {
+                            phase in
+                            switch phase {
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .frame(width: 400, height: 400)
+                                        .scaledToFill()
+                                case .empty:
+                                    ProgressView()
+                                case .failure:
+                                    ProgressView()
+                                @unknown default:
+                                    fatalError()
+                            }
+                        }.onAppear {
+                            trackViewModel.search(artist: artist.name)
+                            searchViewModel.search(search: artist.name)
+                            playlistViewModel.search(artist: artist.name)
                         }
-                    }.onAppear {
-                        trackViewModel.search(artist: artist.name)
                     }
                     Text(artist.name)
                         .font(.system(size: 48))
@@ -37,28 +44,30 @@ struct ArtistView: View {
 
                     Spacer(minLength: 100)
                     HStack {
-                        CacheAsyncImage(url: URL(string: artist.images[2].url)!) {
-                            phase in
-                            switch phase {
-                                case .success(let image):
-                                    HStack {
-                                        image
-                                            .resizable()
-                                            .frame(width: 30, height: 45)
-                                    }
-                                    .frame(width: 40, height: 50)
-                                    .border(Color(red: 41/255, green: 41/255, blue: 41/255), width: 5)
-                                    .cornerRadius(6)
-                                    .frame(width: 45, height: 55)
-                                    .border(.gray, width: 3)
-                                    .cornerRadius(6)
-                                    .offset(x: -5)
-                                case .empty:
-                                    ProgressView()
-                                case .failure:
-                                    ProgressView()
-                                @unknown default:
-                                    fatalError()
+                        if let images = artist.images {
+                            CacheAsyncImage(url: URL(string: images[2].url)!) {
+                                phase in
+                                switch phase {
+                                    case .success(let image):
+                                        HStack {
+                                            image
+                                                .resizable()
+                                                .frame(width: 30, height: 45)
+                                        }
+                                        .frame(width: 40, height: 50)
+                                        .border(Color(red: 41/255, green: 41/255, blue: 41/255), width: 5)
+                                        .cornerRadius(6)
+                                        .frame(width: 45, height: 55)
+                                        .border(.gray, width: 3)
+                                        .cornerRadius(6)
+                                        .offset(x: -5)
+                                    case .empty:
+                                        ProgressView()
+                                    case .failure:
+                                        ProgressView()
+                                    @unknown default:
+                                        fatalError()
+                                }
                             }
                         }
 
@@ -102,8 +111,20 @@ struct ArtistView: View {
                 }
 
                 SearchViewTitle(title: "Popular releases")
+                if let releases = searchViewModel.data?.albums.items {
+                    PopularReleaseView(releases: releases)
+                }
+
                 SearchViewTitle(title: "Featuring bladee")
+                if let featuredPlaylists = playlistViewModel.data?.playlists.items {
+                    LargePlaylistHGridView(featuredPlaylists: featuredPlaylists)
+                }
+
                 SearchViewTitle(title: "Fans also like")
+                if let popularSongs = trackViewModel.data?.tracks.items {
+                    FansAlsoLike(artists: Array(Set(popularSongs.flatMap { $0.artists }.filter { $0.name != artistViewModel.data?.name })))
+                }
+
                 SearchViewTitle(title: "Appears on")
             }
             .background(Color(red: 25/255, green: 25/255, blue: 25/255))
@@ -117,25 +138,52 @@ struct ArtistView: View {
     ArtistView(id: "2xvtxDNInKDV4AvGmjw6d1")
 }
 
-struct TrackView: View {
-    @State var track: SearchTrack
-    @State var index: Int
-    @StateObject var trackViewModel = SingleTrackViewModel()
+struct FansAlsoLike: View {
+    @State var artists: [TrackArtist]
+
+    var body: some View {
+        ScrollView(.horizontal) {
+            LazyHStack {
+                ForEach(artists) { artist in
+                    NavigationLink(destination: ArtistView(id: artist.id)) {
+                        VStack {
+                            ArtistImage(artistId: artist.id, height: 160, width: 160)
+                            Text(artist.name)
+                                .font(.system(size: 16))
+                                .fontWeight(.bold)
+                                .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .center)
+                                .frame(width: 140, height: 40, alignment: .top)
+                                .foregroundColor(.white)
+                                .offset(y: 30)
+                        }.offset(x: 0, y: 25)
+                    }.frame(width: 160, height: 220)
+                }
+            }
+        }.scrollIndicators(.hidden)
+            .padding(.trailing, 30)
+            .offset(x: 14, y: -25)
+    }
+}
+
+struct ArtistImage: View {
+    @State var artistId: String
+    @State var height: CGFloat
+    @State var width: CGFloat
+
+    @StateObject var artistViewModel = ArtistViewModel()
 
     var body: some View {
         HStack {
-            Text(String(index + 1))
-                .foregroundStyle(.white)
-
-            if let image = trackViewModel.data?.album.images {
-                CacheAsyncImage(url: URL(string: image[0].url)!) {
+            if let images = artistViewModel.data?.images {
+                CacheAsyncImage(url: URL(string: images[0].url)!) {
                     phase in
                     switch phase {
                         case .success(let image):
                             image
                                 .resizable()
-                                .scaledToFit()
-                                .frame(width: 60)
+                                .frame(width: width, height: height)
+                                .cornerRadius(100)
+                                .scaledToFill()
                         case .empty:
                             ProgressView()
                         case .failure:
@@ -145,21 +193,8 @@ struct TrackView: View {
                     }
                 }
             }
-            Text(track.name)
-                .foregroundStyle(.white)
-                .fontWeight(.bold)
-                .font(.system(size: 14))
-                .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
-                .frame(width: 200)
-                .offset(x: -15)
-            Spacer()
-            Image(systemName: "ellipsis")
-                .foregroundStyle(.gray)
         }.onAppear {
-            trackViewModel.fetch(id: track.id)
+            artistViewModel.fetch(id: artistId)
         }
-        .padding(.horizontal, 25)
-        .padding(.vertical, 8)
-        .frame(height: 70)
     }
 }
