@@ -32,9 +32,10 @@ struct LargeAlbumHGridView: View {
 
                             VStack {
                                 Text(album.name)
-                                    .font(.system(size: 16))
-                                    .fontWeight(.bold)
                                     .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                                    .font(.system(size: 14))
+                                    .lineLimit(1)
+                                    .fontWeight(.bold)
                                     .frame(width: 160, height: 40, alignment: .top)
                                     .foregroundColor(.white)
                             }.offset(x: 0, y: 25)

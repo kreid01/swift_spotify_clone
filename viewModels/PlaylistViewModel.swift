@@ -28,8 +28,6 @@ class PlaylistViewModel: ObservableObject {
             return
         }
 
-        print(url)
-
         var request = URLRequest(url: url)
         request.setValue(token, forHTTPHeaderField: "Authorization")
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, _, error in
@@ -40,7 +38,6 @@ class PlaylistViewModel: ObservableObject {
                 let decodedData = try JSONDecoder().decode(PlaylistResult.self, from: data)
                 DispatchQueue.main.async {
                     self?.data = decodedData
-                    print(decodedData)
                 }
             } catch {
                 print(error)

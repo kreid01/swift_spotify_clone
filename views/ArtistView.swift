@@ -6,6 +6,7 @@ struct ArtistView: View {
     @StateObject var trackViewModel = TrackViewModel()
     @StateObject var searchViewModel = SearchViewModel()
     @StateObject var playlistViewModel = PlaylistViewModel()
+    @StateObject var appearsOnViewModel = AppearsOnViewModel()
 
     var body: some View {
         NavigationView {
@@ -32,6 +33,7 @@ struct ArtistView: View {
                             trackViewModel.search(artist: artist.name)
                             searchViewModel.search(search: artist.name)
                             playlistViewModel.search(artist: artist.name)
+                            appearsOnViewModel.search(id: artist.id)
                         }
                     }
                     Text(artist.name)
@@ -105,7 +107,7 @@ struct ArtistView: View {
 
                 SearchViewTitle(title: "Popular")
                 if let popularSongs = trackViewModel.data?.tracks.items {
-                    ForEach(0 ..< popularSongs.prefix(5).count, id: \.self) { i in
+                    ForEach(0 ..< 5, id: \.self) { i in
                         TrackView(track: popularSongs[i], index: i)
                     }
                 }
@@ -125,7 +127,12 @@ struct ArtistView: View {
                     FansAlsoLike(artists: Array(Set(popularSongs.flatMap { $0.artists }.filter { $0.name != artistViewModel.data?.name })))
                 }
 
-                SearchViewTitle(title: "Appears on")
+                VStack {
+                    SearchViewTitle(title: "Appears on")
+                    if let appearsOnAlbums = appearsOnViewModel.data?.items {
+                        LargeAlbumHGridView(albums: appearsOnAlbums)
+                    }
+                }.offset(y: -15)
             }
             .background(Color(red: 25/255, green: 25/255, blue: 25/255))
         }.onAppear {
@@ -136,65 +143,4 @@ struct ArtistView: View {
 
 #Preview {
     ArtistView(id: "2xvtxDNInKDV4AvGmjw6d1")
-}
-
-struct FansAlsoLike: View {
-    @State var artists: [TrackArtist]
-
-    var body: some View {
-        ScrollView(.horizontal) {
-            LazyHStack {
-                ForEach(artists) { artist in
-                    NavigationLink(destination: ArtistView(id: artist.id)) {
-                        VStack {
-                            ArtistImage(artistId: artist.id, height: 160, width: 160)
-                            Text(artist.name)
-                                .font(.system(size: 16))
-                                .fontWeight(.bold)
-                                .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .center)
-                                .frame(width: 140, height: 40, alignment: .top)
-                                .foregroundColor(.white)
-                                .offset(y: 30)
-                        }.offset(x: 0, y: 25)
-                    }.frame(width: 160, height: 220)
-                }
-            }
-        }.scrollIndicators(.hidden)
-            .padding(.trailing, 30)
-            .offset(x: 14, y: -25)
-    }
-}
-
-struct ArtistImage: View {
-    @State var artistId: String
-    @State var height: CGFloat
-    @State var width: CGFloat
-
-    @StateObject var artistViewModel = ArtistViewModel()
-
-    var body: some View {
-        HStack {
-            if let images = artistViewModel.data?.images {
-                CacheAsyncImage(url: URL(string: images[0].url)!) {
-                    phase in
-                    switch phase {
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .frame(width: width, height: height)
-                                .cornerRadius(100)
-                                .scaledToFill()
-                        case .empty:
-                            ProgressView()
-                        case .failure:
-                            ProgressView()
-                        @unknown default:
-                            fatalError()
-                    }
-                }
-            }
-        }.onAppear {
-            artistViewModel.fetch(id: artistId)
-        }
-    }
 }

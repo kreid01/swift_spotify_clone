@@ -28,7 +28,7 @@ class TrackViewModel: ObservableObject {
     @Published var data: TracksResult?
 
     func search(artist: String) {
-        guard let url = URL(string: "https://api.spotify.com/v1/search?q=artist:\(artist)&type=track") else {
+        guard let url = URL(string: "https://api.spotify.com/v1/search?q=artist:\(artist)&type=track&limit=50") else {
             return
         }
 

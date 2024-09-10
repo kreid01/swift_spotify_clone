@@ -28,7 +28,7 @@ struct LargePlaylistHGridView: View {
 
                             Text(playlist.description)
                                 .lineLimit(1)
-                                .font(.system(size: 14))
+                                .font(.system(size: 12))
                                 .fontWeight(.bold)
                                 .frame(width: 160, height: 40)
                                 .foregroundColor(.white)

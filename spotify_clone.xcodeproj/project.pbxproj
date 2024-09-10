@@ -33,6 +33,9 @@
 		85EB6B8A2C905A5500DB60BC /* LargePlaylistHGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6B892C905A5500DB60BC /* LargePlaylistHGridView.swift */; };
 		85EB6B8C2C905AF200DB60BC /* PopularReleaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6B8B2C905AF200DB60BC /* PopularReleaseView.swift */; };
 		85EB6B8E2C905B5500DB60BC /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6B8D2C905B5500DB60BC /* TrackView.swift */; };
+		85EB6B902C90660D00DB60BC /* ArtistImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6B8F2C90660D00DB60BC /* ArtistImage.swift */; };
+		85EB6B922C90662A00DB60BC /* FansAlsoLike.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6B912C90662A00DB60BC /* FansAlsoLike.swift */; };
+		85EB6B942C907F2100DB60BC /* AppearsOnViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6B932C907F2100DB60BC /* AppearsOnViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +67,9 @@
 		85EB6B892C905A5500DB60BC /* LargePlaylistHGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargePlaylistHGridView.swift; sourceTree = "<group>"; };
 		85EB6B8B2C905AF200DB60BC /* PopularReleaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularReleaseView.swift; sourceTree = "<group>"; };
 		85EB6B8D2C905B5500DB60BC /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
+		85EB6B8F2C90660D00DB60BC /* ArtistImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistImage.swift; sourceTree = "<group>"; };
+		85EB6B912C90662A00DB60BC /* FansAlsoLike.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FansAlsoLike.swift; sourceTree = "<group>"; };
+		85EB6B932C907F2100DB60BC /* AppearsOnViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearsOnViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +154,8 @@
 				85EB6B722C8F5AC100DB60BC /* FilterView.swift */,
 				85EB6B8B2C905AF200DB60BC /* PopularReleaseView.swift */,
 				85EB6B8D2C905B5500DB60BC /* TrackView.swift */,
+				85EB6B8F2C90660D00DB60BC /* ArtistImage.swift */,
+				85EB6B912C90662A00DB60BC /* FansAlsoLike.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -161,6 +169,7 @@
 				85EB6B6C2C8F5A4A00DB60BC /* SearchViewModel.swift */,
 				85EB6B7F2C8F6B1600DB60BC /* TrackViewModel.swift */,
 				85EB6B812C8F750F00DB60BC /* SingleTrackViewModel.swift */,
+				85EB6B932C907F2100DB60BC /* AppearsOnViewModel.swift */,
 			);
 			path = viewModels;
 			sourceTree = "<group>";
@@ -249,6 +258,7 @@
 				85EB6B652C8DEDCD00DB60BC /* LPView.swift in Sources */,
 				85EB6B6A2C8F5A1200DB60BC /* AlbumHGridView.swift in Sources */,
 				85EB6B882C8F89EB00DB60BC /* PlaylistViewModel.swift in Sources */,
+				85EB6B942C907F2100DB60BC /* AppearsOnViewModel.swift in Sources */,
 				85EB6B8C2C905AF200DB60BC /* PopularReleaseView.swift in Sources */,
 				85EB6B7A2C8F63AA00DB60BC /* ArtistView.swift in Sources */,
 				85EB6B7C2C8F63F700DB60BC /* ArtistViewModel.swift in Sources */,
@@ -261,8 +271,10 @@
 				85EB6B8A2C905A5500DB60BC /* LargePlaylistHGridView.swift in Sources */,
 				85EB6B7E2C8F643E00DB60BC /* ArtistModels.swift in Sources */,
 				85EB6B842C8F828D00DB60BC /* Token.swift in Sources */,
+				85EB6B902C90660D00DB60BC /* ArtistImage.swift in Sources */,
 				850198222C8CAC78000BA900 /* HomeView.swift in Sources */,
 				850197F52C8B1ED7000BA900 /* ContentView.swift in Sources */,
+				85EB6B922C90662A00DB60BC /* FansAlsoLike.swift in Sources */,
 				85EB6B6F2C8F5A8500DB60BC /* HomeViewTitle.swift in Sources */,
 				85EB6B762C8F5AF400DB60BC /* AlbumModels.swift in Sources */,
 				85EB6B822C8F750F00DB60BC /* SingleTrackViewModel.swift in Sources */,

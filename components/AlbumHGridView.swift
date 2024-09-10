@@ -31,7 +31,7 @@ struct AlbumHGridView: View {
 
                             Text(album.name)
                                 .offset(y: -10)
-                                .font(.system(size: 10))
+                                .font(.system(size: 12))
                                 .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
                                 .frame(width: 90)
                                 .foregroundColor(.white)
