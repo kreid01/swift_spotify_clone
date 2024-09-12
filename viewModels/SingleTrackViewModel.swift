@@ -2,6 +2,8 @@ import SwiftUI
 
 struct TrackObjectResult: Decodable {
     let album: TrackObject
+    let name: String
+    let artists: [TrackArtist]
 }
 
 struct TrackObject: Decodable {
@@ -18,6 +20,8 @@ class SingleTrackViewModel: ObservableObject {
             return
         }
 
+        print(url)
+
         var request = URLRequest(url: url)
         request.setValue(token, forHTTPHeaderField: "Authorization")
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, _, error in
@@ -28,6 +32,7 @@ class SingleTrackViewModel: ObservableObject {
                 let decodedData = try JSONDecoder().decode(TrackObjectResult.self, from: data)
                 DispatchQueue.main.async {
                     self?.data = decodedData
+                    print(decodedData)
                 }
             } catch {
                 print(error)

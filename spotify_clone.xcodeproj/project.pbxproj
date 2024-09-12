@@ -37,6 +37,7 @@
 		85EB6B922C90662A00DB60BC /* FansAlsoLike.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6B912C90662A00DB60BC /* FansAlsoLike.swift */; };
 		85EB6B942C907F2100DB60BC /* AppearsOnViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6B932C907F2100DB60BC /* AppearsOnViewModel.swift */; };
 		85EB6B962C91FD1B00DB60BC /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6B952C91FD1B00DB60BC /* LibraryView.swift */; };
+		85EB6B982C92DD3500DB60BC /* LikedSongsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6B972C92DD3500DB60BC /* LikedSongsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +73,7 @@
 		85EB6B912C90662A00DB60BC /* FansAlsoLike.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FansAlsoLike.swift; sourceTree = "<group>"; };
 		85EB6B932C907F2100DB60BC /* AppearsOnViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearsOnViewModel.swift; sourceTree = "<group>"; };
 		85EB6B952C91FD1B00DB60BC /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
+		85EB6B972C92DD3500DB60BC /* LikedSongsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedSongsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +144,7 @@
 				85EB6B642C8DEDCD00DB60BC /* LPView.swift */,
 				85EB6B792C8F63AA00DB60BC /* ArtistView.swift */,
 				85EB6B952C91FD1B00DB60BC /* LibraryView.swift */,
+				85EB6B972C92DD3500DB60BC /* LikedSongsView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -261,6 +264,7 @@
 				85EB6B802C8F6B1600DB60BC /* TrackViewModel.swift in Sources */,
 				85EB6B652C8DEDCD00DB60BC /* LPView.swift in Sources */,
 				85EB6B6A2C8F5A1200DB60BC /* AlbumHGridView.swift in Sources */,
+				85EB6B982C92DD3500DB60BC /* LikedSongsView.swift in Sources */,
 				85EB6B882C8F89EB00DB60BC /* PlaylistViewModel.swift in Sources */,
 				85EB6B942C907F2100DB60BC /* AppearsOnViewModel.swift in Sources */,
 				85EB6B8C2C905AF200DB60BC /* PopularReleaseView.swift in Sources */,

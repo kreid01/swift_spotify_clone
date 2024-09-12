@@ -62,5 +62,6 @@ struct LibraryView: View {
 }
 
 #Preview {
-    LibraryView()
+    LikedSongsView()
 }
+

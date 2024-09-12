@@ -4,6 +4,7 @@ struct LPView: View {
     @State var id: String
     @StateObject var viewModel: ViewModel
     @StateObject var searchViewModel: SearchViewModel = .init()
+    @StateObject var likedSongsViewModel: LikedSongsViewModel = .init()
 
     init(id: String) {
         self.id = id
@@ -141,6 +142,9 @@ struct LPView: View {
                             Spacer()
                             Image(systemName: "ellipsis")
                                 .foregroundStyle(.gray)
+                        }
+                        .onTapGesture {
+                            likedSongsViewModel.LikeSong(id: album.tracks.items[i].id)
                         }
                         .padding(.horizontal, 25)
                         .padding(.vertical, 8)
