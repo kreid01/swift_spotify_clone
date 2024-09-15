@@ -54,6 +54,8 @@ struct TrackView: View {
 struct TrackViewFromId: View {
     @State var id: String
     @StateObject var trackViewModel = SingleTrackViewModel()
+    @StateObject var likedSongsViewModel = LikedSongsViewModel()
+    @EnvironmentObject var playingSongViewModel: PlayingSongViewModel
 
     var body: some View {
         HStack {
@@ -97,9 +99,19 @@ struct TrackViewFromId: View {
                 Spacer()
                 Image(systemName: "ellipsis")
                     .foregroundStyle(.gray)
+                    .onTapGesture {
+                        likedSongsViewModel.UnLikeSong(id: id)
+                    }
             }
         }.onAppear {
             trackViewModel.fetch(id: id)
+        }
+        .onTapGesture {
+            if let track = trackViewModel.data {
+                playingSongViewModel.imageUrl = track.album.images?[0].url
+                playingSongViewModel.artist = track.artists.map { $0.name }
+                playingSongViewModel.song = track.name
+            }
         }
         .padding(.vertical, 8)
         .frame(height: 70)

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct LargeAlbumHGridView: View {
     @State var albums: [SearchSpotifyAlbum]
-
+    
     var body: some View {
         ScrollView(.horizontal) {
             LazyHStack {

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct UpdateUserLikesInput: Encodable {
-    let likes: [String]
+    let likeId: String
 }
 
 struct UserResult: Decodable {
@@ -12,20 +12,62 @@ struct User: Decodable {
     let ID: Int
     let name: String
     let likes: [String]
+    let followedArtists: [String]
+    var likedAlbums: [String]
 }
 
 class LikedSongsViewModel: ObservableObject {
     @Published var data: User?
 
     func LikeSong(id: String) {
-        guard let url = URL(string: "http://localhost:8080/users/likes/13") else { return }
+        guard let url = URL(string: "http://localhost:8080/users/likes/1") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
         do {
-            let jsonData = try JSONEncoder().encode(UpdateUserLikesInput(likes: [id]))
+            let jsonData = try JSONEncoder().encode(UpdateUserLikesInput(likeId: id))
             request.httpBody = jsonData
+
+            print(jsonData)
+
+            URLSession.shared.dataTask(with: request) { _, response, error in
+                if let error = error {
+                    DispatchQueue.main.async {
+                        print("Failed to send feedback: \(error.localizedDescription)")
+                    }
+                    return
+                }
+
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    DispatchQueue.main.async {
+                        print("Failed with status code: \((response as? HTTPURLResponse)?.statusCode ?? -1)")
+                    }
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    print("Feedback sent successfully!")
+                }
+            }.resume()
+        } catch {
+            DispatchQueue.main.async {
+                print("Failed to encode feedback")
+            }
+        }
+    }
+
+    func UnLikeSong(id: String) {
+        guard let url = URL(string: "http://localhost:8080/users/likes/1") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        do {
+            let jsonData = try JSONEncoder().encode(UpdateUserLikesInput(likeId: id))
+            request.httpBody = jsonData
+
+            print(jsonData)
 
             URLSession.shared.dataTask(with: request) { _, response, error in
                 if let error = error {
@@ -54,7 +96,7 @@ class LikedSongsViewModel: ObservableObject {
     }
 
     func fetch() {
-        guard let url = URL(string: "http://localhost:8080/users/13") else {
+        guard let url = URL(string: "http://localhost:8080/users/1") else {
             return
         }
 
@@ -130,14 +172,18 @@ struct LikedSongsView: View {
                     .frame(width: 200, height: 70)
                     .foregroundStyle(.white)
                     if let likedSongs = likedSongsViewModel.data?.likes {
-                        ForEach(0 ..< likedSongs.count) { _ in
-                            TrackViewFromId(id: likedSongs[14])
+                        ForEach(0 ..< likedSongs.count) { i in
+                            TrackViewFromId(id: likedSongs[i]).onTapGesture {}
                         }
                     }
-                }.padding(.horizontal, 20)
-            }
-            .onAppear {
-                likedSongsViewModel.fetch()
+                }
+                .refreshable {
+                    likedSongsViewModel.fetch()
+                }
+                .padding(.horizontal, 20)
+                .onAppear {
+                    likedSongsViewModel.fetch()
+                }
             }
             .background(Color(red: 25/255, green: 25/255, blue: 25/255))
         }

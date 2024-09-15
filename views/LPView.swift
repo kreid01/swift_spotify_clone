@@ -2,20 +2,21 @@ import SwiftUI
 
 struct LPView: View {
     @State var id: String
-    @StateObject var viewModel: ViewModel
+    @StateObject var lpViewModel: LPViewModel
     @StateObject var searchViewModel: SearchViewModel = .init()
     @StateObject var likedSongsViewModel: LikedSongsViewModel = .init()
+    @StateObject var userViewModel: UserViewModel = .init()
 
     init(id: String) {
         self.id = id
-        _viewModel = StateObject(wrappedValue: ViewModel(id: id))
+        _lpViewModel = StateObject(wrappedValue: LPViewModel(id: id))
     }
 
     var body: some View {
         NavigationView {
             ScrollView {
                 Spacer(minLength: 100)
-                if let album = viewModel.data {
+                if let album = lpViewModel.data {
                     CacheAsyncImage(url: URL(string: album.images[0].url)!) {
                         phase in
                         switch phase {
@@ -34,7 +35,7 @@ struct LPView: View {
                         }
                     }
                     Spacer(minLength: 100)
-                    Text(viewModel.data?.name ?? "")
+                    Text(lpViewModel.data?.name ?? "")
                         .foregroundStyle(.white)
                         .font(.system(size: 24))
                         .fontWeight(.bold)
@@ -42,12 +43,13 @@ struct LPView: View {
                         .padding(.leading, 20)
 
                     HStack {
-                        Circle()
+                        ArtistImage(artistId: album.artists[0].id, height: 20, width: 20)
                             .frame(width: 20, height: 20)
-                            .foregroundColor(.white)
-                        Text(album.artists[0].name)
-                            .foregroundStyle(.white)
-                            .fontWeight(.bold)
+                        NavigationLink(destination: ArtistView(id: album.artists[0].id)) {
+                            Text(album.artists[0].name)
+                                .foregroundStyle(.white)
+                                .fontWeight(.bold)
+                        }
 
                         Spacer()
                     }.padding(.leading, 20)
@@ -84,13 +86,34 @@ struct LPView: View {
                         }
 
                         HStack {
-                            Image(systemName: "checkmark")
-                                .frame(width: 25, height: 25)
-                                .fontWeight(.bold)
-                                .font(.system(size: 12))
-                                .background(.green)
-                                .cornerRadius(20)
-                                .padding(.horizontal, 5)
+                            if let user = userViewModel.data {
+                                Image(systemName: user.likedAlbums.contains(id) ? "checkmark" : "plus.circle")
+                                    .frame(width: 25, height: 25)
+                                    .fontWeight(.bold)
+                                    .font(.system(size:
+                                        user.likedAlbums.contains(id) ? 12 : 24))
+                                    .foregroundStyle(user.likedAlbums.contains(id) ?.black : .gray)
+                                    .background(user.likedAlbums.contains(id) ?.green : .clear)
+                                    .cornerRadius(20)
+                                    .padding(.horizontal, 5)
+                                    .onTapGesture {
+                                        if user.likedAlbums.contains(id) {
+                                            lpViewModel.UnlikeAlbum(id: id)
+                                        } else {
+                                            lpViewModel.LikeAlbum(id: id)
+                                        }
+                                    }
+                            } else {
+                                Image(systemName: "plus.circle")
+                                    .frame(width: 25, height: 25)
+                                    .font(.system(size: 32))
+                                    .cornerRadius(20)
+                                    .padding(.horizontal, 5)
+                                    .foregroundStyle(.white)
+                                    .onTapGesture {
+                                        lpViewModel.LikeAlbum(id: id)
+                                    }
+                            }
 
                             Image(systemName: "arrow.down")
                                 .frame(width: 25, height: 25)
@@ -202,14 +225,15 @@ struct LPView: View {
             .padding(.bottom, 20)
             .background(Color(red: 25/255, green: 25/255, blue: 25/255))
             .onAppear {
-                viewModel.fetch()
+                lpViewModel.fetch()
+                userViewModel.fetch()
             }
         }.navigationTitle("")
     }
 }
 
 #Preview {
-    LPView(id: "0ZyoyTZbl3g0IwkNlpg633")
+    LPView(id: "0NCLTcIG4kbORFysmf56BW")
 }
 
 func convertDateString(_ dateString: String) -> String? {

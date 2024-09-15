@@ -7,6 +7,8 @@ struct ArtistView: View {
     @StateObject var searchViewModel = SearchViewModel()
     @StateObject var playlistViewModel = PlaylistViewModel()
     @StateObject var appearsOnViewModel = AppearsOnViewModel()
+    @StateObject var likedSongsViewModel = LikedSongsViewModel()
+    @StateObject var userViewModel = UserViewModel()
 
     var body: some View {
         NavigationView {
@@ -34,6 +36,7 @@ struct ArtistView: View {
                             searchViewModel.search(search: artist.name)
                             playlistViewModel.search(artist: artist.name)
                             appearsOnViewModel.search(id: artist.id)
+                            userViewModel.fetch()
                         }
                     }
                     Text(artist.name)
@@ -74,11 +77,35 @@ struct ArtistView: View {
                         }
 
                         HStack {
-                            Text("Follow")
-                                .frame(width: 80)
-                                .padding(10)
-                                .background(RoundedRectangle(cornerRadius: 20).strokeBorder(Color.white, lineWidth: 1))
-                                .foregroundColor(.white)
+                            if let user = userViewModel.data {
+                                Text(user.followedArtists.contains(id) ? "Following" : "Follow")
+                                    .frame(width: 80) // Set width of the button
+                                    .padding(10) // Add padding around the text
+                                    .background(user.followedArtists.contains(id) ? Color.green : Color.clear) // Green if followed, transparent if not
+                                    .cornerRadius(20) // Apply rounded corners to the background
+                                    .overlay( // Add the white border
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .stroke(Color.white, lineWidth: 1) // White border with width 1
+                                    )
+                                    .foregroundColor(.white) // Set t
+                                    .onTapGesture {
+                                        if user.followedArtists.contains(id) {
+                                            artistViewModel.UnFollowArtists(id: id)
+                                        } else {
+                                            artistViewModel.FollowArtist(id: id)
+                                        }
+                                    }
+                            } else {
+                                Text("Follow")
+                                    .frame(width: 80)
+                                    .padding(10)
+                                    .cornerRadius(20)
+                                    .foregroundColor(.white)
+                                    .background(RoundedRectangle(cornerRadius: 20).strokeBorder(Color.white, lineWidth: 1))
+                                    .onTapGesture {
+                                        artistViewModel.FollowArtist(id: id)
+                                    }
+                            }
 
                             Image(systemName: "ellipsis")
                                 .frame(width: 30, height: 30)
@@ -107,8 +134,11 @@ struct ArtistView: View {
 
                 SearchViewTitle(title: "Popular")
                 if let popularSongs = trackViewModel.data?.tracks.items {
-                    ForEach(0 ..< 5, id: \.self) { i in
+                    ForEach(0 ..< popularSongs.prefix(5).count, id: \.self) { i in
                         TrackView(track: popularSongs[i], index: i)
+                            .onTapGesture {
+                                likedSongsViewModel.LikeSong(id: popularSongs[i].id)
+                            }
                     }
                 }
 

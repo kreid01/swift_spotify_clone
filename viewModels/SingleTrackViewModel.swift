@@ -32,7 +32,6 @@ class SingleTrackViewModel: ObservableObject {
                 let decodedData = try JSONDecoder().decode(TrackObjectResult.self, from: data)
                 DispatchQueue.main.async {
                     self?.data = decodedData
-                    print(decodedData)
                 }
             } catch {
                 print(error)
