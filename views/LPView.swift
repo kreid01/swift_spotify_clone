@@ -4,8 +4,8 @@ struct LPView: View {
     @State var id: String
     @StateObject var lpViewModel: ViewModel<SpotifyAlbum> = .init()
     @StateObject var searchViewModel: ViewModel<AlbumResult> = .init()
-    @StateObject var likedSongsViewModel: ViewModel<User> = .init()
-    @StateObject var userViewModel: ViewModel<User> = .init()
+    @StateObject var likedSongsViewModel: ViewModel<UserResult> = .init()
+    @StateObject var userViewModel: ViewModel<UserResult> = .init()
 
     init(id: String) {
         self.id = id
@@ -85,7 +85,7 @@ struct LPView: View {
                         }
 
                         HStack {
-                            if let user = userViewModel.data {
+                            if let user = userViewModel.data?.data {
                                 Image(systemName: user.likedAlbums.contains(id) ? "checkmark" : "plus.circle")
                                     .frame(width: 25, height: 25)
                                     .fontWeight(.bold)

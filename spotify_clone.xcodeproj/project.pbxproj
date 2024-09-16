@@ -35,6 +35,8 @@
 		85EB6B9A2C9301DA00DB60BC /* ProfileSidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6B992C9301DA00DB60BC /* ProfileSidebar.swift */; };
 		85EB6BA22C98BAD800DB60BC /* PlaylistModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6BA12C98BAD800DB60BC /* PlaylistModels.swift */; };
 		85EB6BA42C98BED500DB60BC /* TrackModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6BA32C98BED500DB60BC /* TrackModels.swift */; };
+		85EB6BA62C98CEF500DB60BC /* ArtistFromIdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6BA52C98CEF500DB60BC /* ArtistFromIdView.swift */; };
+		85EB6BA82C98CF3C00DB60BC /* AlbumFromIdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6BA72C98CF3C00DB60BC /* AlbumFromIdView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +70,8 @@
 		85EB6B992C9301DA00DB60BC /* ProfileSidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSidebar.swift; sourceTree = "<group>"; };
 		85EB6BA12C98BAD800DB60BC /* PlaylistModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistModels.swift; sourceTree = "<group>"; };
 		85EB6BA32C98BED500DB60BC /* TrackModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackModels.swift; sourceTree = "<group>"; };
+		85EB6BA52C98CEF500DB60BC /* ArtistFromIdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistFromIdView.swift; sourceTree = "<group>"; };
+		85EB6BA72C98CF3C00DB60BC /* AlbumFromIdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumFromIdView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +161,8 @@
 				85EB6B8F2C90660D00DB60BC /* ArtistImage.swift */,
 				85EB6B912C90662A00DB60BC /* FansAlsoLike.swift */,
 				85EB6B992C9301DA00DB60BC /* ProfileSidebar.swift */,
+				85EB6BA52C98CEF500DB60BC /* ArtistFromIdView.swift */,
+				85EB6BA72C98CF3C00DB60BC /* AlbumFromIdView.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -268,6 +274,7 @@
 				85EB6B8A2C905A5500DB60BC /* LargePlaylistHGridView.swift in Sources */,
 				85EB6B7E2C8F643E00DB60BC /* ArtistModels.swift in Sources */,
 				85EB6B842C8F828D00DB60BC /* Token.swift in Sources */,
+				85EB6BA82C98CF3C00DB60BC /* AlbumFromIdView.swift in Sources */,
 				85EB6B902C90660D00DB60BC /* ArtistImage.swift in Sources */,
 				85EB6B9A2C9301DA00DB60BC /* ProfileSidebar.swift in Sources */,
 				850198222C8CAC78000BA900 /* HomeView.swift in Sources */,
@@ -276,6 +283,7 @@
 				85EB6B6F2C8F5A8500DB60BC /* HomeViewTitle.swift in Sources */,
 				85EB6B762C8F5AF400DB60BC /* AlbumModels.swift in Sources */,
 				85EB6B682C8F59D800DB60BC /* LargeAlbumHGridView.swift in Sources */,
+				85EB6BA62C98CEF500DB60BC /* ArtistFromIdView.swift in Sources */,
 				850197F32C8B1ED7000BA900 /* spotify_cloneApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

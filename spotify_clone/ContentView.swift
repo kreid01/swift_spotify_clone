@@ -29,7 +29,7 @@ struct ContentView: View {
                     .black,
                     for: .tabBar)
             VStack {
-                LikedSongsView()
+                LibraryView()
                 PlayingSongView()
             }
             .tabItem {

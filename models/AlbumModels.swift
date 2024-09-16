@@ -1,5 +1,5 @@
 struct SpotifyAlbum: Decodable {
-    let total_tracks: Int
+    let total_tracks: Int?
     let id: String
     let images: [AlbumImage]
     let name: String

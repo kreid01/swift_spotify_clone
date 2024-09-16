@@ -19,7 +19,7 @@ struct User: Decodable {
 struct LikedSongsView: View {
     var mediaFilter: [String] = ["Alternative Hip-Hop", "Indie Rock", "Rock", "Metal", "Fast", "Country"]
     var selectedMediaFilter = ""
-    @StateObject var likedSongsViewModel: ViewModel<User> = .init()
+    @StateObject var likedSongsViewModel: ViewModel<UserResult> = .init()
 
     var body: some View {
         NavigationView {
@@ -68,7 +68,7 @@ struct LikedSongsView: View {
                     }
                     .frame(width: 200, height: 70)
                     .foregroundStyle(.white)
-                    if let likedSongs = likedSongsViewModel.data?.likes {
+                    if let likedSongs = likedSongsViewModel.data?.data.likes {
                         ForEach(0 ..< likedSongs.count) { i in
                             TrackViewFromId(id: likedSongs[i]).onTapGesture {}
                         }
