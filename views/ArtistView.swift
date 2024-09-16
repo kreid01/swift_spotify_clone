@@ -1,14 +1,18 @@
 import SwiftUI
 
+struct UpdateFollowedArtistInput: Encodable {
+    let artistId: String
+}
+
 struct ArtistView: View {
     @State var id: String
-    @StateObject var artistViewModel = ArtistViewModel()
-    @StateObject var trackViewModel = TrackViewModel()
-    @StateObject var searchViewModel = SearchViewModel()
-    @StateObject var playlistViewModel = PlaylistViewModel()
-    @StateObject var appearsOnViewModel = AppearsOnViewModel()
-    @StateObject var likedSongsViewModel = LikedSongsViewModel()
-    @StateObject var userViewModel = UserViewModel()
+    @StateObject var artistViewModel = ViewModel<Artist>()
+    @StateObject var trackViewModel = ViewModel<TracksResult>()
+    @StateObject var searchViewModel = ViewModel<AlbumResult>()
+    @StateObject var playlistViewModel = ViewModel<PlaylistResult>()
+    @StateObject var appearsOnViewModel = ViewModel<ItemResult>()
+    @StateObject var likedSongsViewModel = ViewModel<User>()
+    @StateObject var userViewModel = ViewModel<User>()
 
     var body: some View {
         VStack {
@@ -32,11 +36,12 @@ struct ArtistView: View {
                                     fatalError()
                             }
                         }.onAppear {
-                            trackViewModel.search(artist: artist.name)
-                            searchViewModel.search(search: artist.name)
-                            playlistViewModel.search(artist: artist.name)
-                            appearsOnViewModel.search(id: artist.id)
-                            userViewModel.fetch()
+                            trackViewModel.fetch(url:
+                                "https://api.spotify.com/v1/search?q=artist:\(artist.name)&type=track&limit=50")
+                            searchViewModel.fetch(url: "https://api.spotify.com/v1/search?q=artist:\(artist.name)&type=album")
+                            playlistViewModel.fetch(url: "https://api.spotify.com/v1/search?q=artist:\(artist.name)&type=playlist")
+                            appearsOnViewModel.fetch(url: "https://api.spotify.com/v1/artists/\(artist.id)/albums?limit=50&include_groups=appears_on")
+                            userViewModel.fetch(url: "http://localhost:8080/users/1")
                         }
                     }
                     Text(artist.name)
@@ -87,12 +92,14 @@ struct ArtistView: View {
                                         RoundedRectangle(cornerRadius: 20)
                                             .stroke(Color.white, lineWidth: 1)
                                     )
-                                    .foregroundColor(.white) // Set t
+                                    .foregroundColor(.white)
                                     .onTapGesture {
                                         if user.followedArtists.contains(id) {
-                                            artistViewModel.UnFollowArtists(id: id)
+                                            artistViewModel.Unlike(id: id, url: "http://localhost:8080/users/1",
+                                                                   input: UpdateFollowedArtistInput(artistId: id))
                                         } else {
-                                            artistViewModel.FollowArtist(id: id)
+                                            artistViewModel.Like(id: id, url: "http://localhost:8080/users/1",
+                                                                 input: UpdateFollowedArtistInput(artistId: id))
                                         }
                                     }
                             } else {
@@ -103,7 +110,8 @@ struct ArtistView: View {
                                     .foregroundColor(.white)
                                     .background(RoundedRectangle(cornerRadius: 20).strokeBorder(Color.white, lineWidth: 1))
                                     .onTapGesture {
-                                        artistViewModel.FollowArtist(id: id)
+                                        artistViewModel.Like(id: id, url: "http://localhost:8080/users/1",
+                                                             input: UpdateFollowedArtistInput(artistId: id))
                                     }
                             }
 
@@ -137,7 +145,7 @@ struct ArtistView: View {
                     ForEach(0 ..< popularSongs.prefix(5).count, id: \.self) { i in
                         TrackView(track: popularSongs[i], index: i)
                             .onTapGesture {
-                                likedSongsViewModel.LikeSong(id: popularSongs[i].id)
+                                likedSongsViewModel.Like(id: popularSongs[i].id, url: "http://localhost:8080/users/likes/1", input: UpdateUserLikesInput(likeId: popularSongs[i].id))
                             }
                     }
                 }
@@ -166,7 +174,7 @@ struct ArtistView: View {
             }
             .background(Color(red: 25/255, green: 25/255, blue: 25/255))
         }.onAppear {
-            artistViewModel.fetch(id: id)
+            artistViewModel.fetch(url: "https://api.spotify.com/v1/artists/\(id)")
         }.frame(width: 400)
     }
 }

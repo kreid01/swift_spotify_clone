@@ -16,113 +16,10 @@ struct User: Decodable {
     var likedAlbums: [String]
 }
 
-class LikedSongsViewModel: ObservableObject {
-    @Published var data: User?
-
-    func LikeSong(id: String) {
-        guard let url = URL(string: "http://localhost:8080/users/likes/1") else { return }
-        var request = URLRequest(url: url)
-        request.httpMethod = "PUT"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        do {
-            let jsonData = try JSONEncoder().encode(UpdateUserLikesInput(likeId: id))
-            request.httpBody = jsonData
-
-            print(jsonData)
-
-            URLSession.shared.dataTask(with: request) { _, response, error in
-                if let error = error {
-                    DispatchQueue.main.async {
-                        print("Failed to send feedback: \(error.localizedDescription)")
-                    }
-                    return
-                }
-
-                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                    DispatchQueue.main.async {
-                        print("Failed with status code: \((response as? HTTPURLResponse)?.statusCode ?? -1)")
-                    }
-                    return
-                }
-
-                DispatchQueue.main.async {
-                    print("Feedback sent successfully!")
-                }
-            }.resume()
-        } catch {
-            DispatchQueue.main.async {
-                print("Failed to encode feedback")
-            }
-        }
-    }
-
-    func UnLikeSong(id: String) {
-        guard let url = URL(string: "http://localhost:8080/users/likes/1") else { return }
-        var request = URLRequest(url: url)
-        request.httpMethod = "DELETE"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        do {
-            let jsonData = try JSONEncoder().encode(UpdateUserLikesInput(likeId: id))
-            request.httpBody = jsonData
-
-            print(jsonData)
-
-            URLSession.shared.dataTask(with: request) { _, response, error in
-                if let error = error {
-                    DispatchQueue.main.async {
-                        print("Failed to send feedback: \(error.localizedDescription)")
-                    }
-                    return
-                }
-
-                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                    DispatchQueue.main.async {
-                        print("Failed with status code: \((response as? HTTPURLResponse)?.statusCode ?? -1)")
-                    }
-                    return
-                }
-
-                DispatchQueue.main.async {
-                    print("Feedback sent successfully!")
-                }
-            }.resume()
-        } catch {
-            DispatchQueue.main.async {
-                print("Failed to encode feedback")
-            }
-        }
-    }
-
-    func fetch() {
-        guard let url = URL(string: "http://localhost:8080/users/1") else {
-            return
-        }
-
-        var request = URLRequest(url: url)
-        let task = URLSession.shared.dataTask(with: request) { [weak self] data, _, error in
-            guard let data = data, error == nil else {
-                return
-            }
-            do {
-                let decodedData = try JSONDecoder().decode(UserResult.self, from: data)
-                DispatchQueue.main.async {
-                    self?.data = decodedData.data
-                }
-            } catch {
-                print(error)
-            }
-        }
-
-        task.resume()
-    }
-}
-
 struct LikedSongsView: View {
     var mediaFilter: [String] = ["Alternative Hip-Hop", "Indie Rock", "Rock", "Metal", "Fast", "Country"]
     var selectedMediaFilter = ""
-    @StateObject var likedSongsViewModel: LikedSongsViewModel = .init()
+    @StateObject var likedSongsViewModel: ViewModel<User> = .init()
 
     var body: some View {
         NavigationView {
@@ -178,11 +75,11 @@ struct LikedSongsView: View {
                     }
                 }
                 .refreshable {
-                    likedSongsViewModel.fetch()
+                    likedSongsViewModel.fetch(url: "http://localhost:8080/users/1")
                 }
                 .padding(.horizontal, 20)
                 .onAppear {
-                    likedSongsViewModel.fetch()
+                    likedSongsViewModel.fetch(url: "http://localhost:8080/users/1")
                 }
             }
             .background(Color(red: 25/255, green: 25/255, blue: 25/255))

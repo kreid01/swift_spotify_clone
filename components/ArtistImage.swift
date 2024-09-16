@@ -5,7 +5,7 @@ struct ArtistImage: View {
     @State var height: CGFloat
     @State var width: CGFloat
 
-    @StateObject var artistViewModel = ArtistViewModel()
+    @StateObject var artistViewModel = ViewModel<Artist>()
 
     var body: some View {
         HStack {
@@ -29,7 +29,7 @@ struct ArtistImage: View {
                 }
             }
         }.onAppear {
-            artistViewModel.fetch(id: artistId)
+            artistViewModel.fetch(url: "https://api.spotify.com/v1/artists/\(artistId)")
         }
     }
 }

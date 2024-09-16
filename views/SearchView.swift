@@ -5,11 +5,7 @@ struct SearchView: View {
     @State var search: String = ""
     @FocusState private var searchFieldIsFocused;
     @State var searching: Bool = false
-    @StateObject var searchViewModel: SearchViewModel
-    
-    init() {
-        _searchViewModel = StateObject(wrappedValue: SearchViewModel())
-    }
+    @StateObject var searchViewModel = ViewModel<AlbumResult>()
     
     var body: some View {
         NavigationView {
@@ -26,7 +22,7 @@ struct SearchView: View {
                                 .keyboardType(.asciiCapable)
                                 .onChange(of: search, perform: { value in
                                     if value != "" {
-                                        searchViewModel.search(search: value)
+                                        searchViewModel.fetch(url: "https://api.spotify.com/v1/search?q=artist:\(value)&type=album")
                                     }
                                 })
                                 .padding(10)

@@ -3,7 +3,7 @@ import SwiftUI
 struct TrackView: View {
     @State var track: SearchTrack
     @State var index: Int
-    @StateObject var trackViewModel = SingleTrackViewModel()
+    @StateObject var trackViewModel = ViewModel<TrackObjectResult>()
 
     var body: some View {
         HStack {
@@ -39,7 +39,7 @@ struct TrackView: View {
             Image(systemName: "ellipsis")
                 .foregroundStyle(.gray)
         }.onAppear {
-            trackViewModel.fetch(id: track.id)
+            trackViewModel.fetch(url: "https://api.spotify.com/v1/tracks/\(track.id)")
         }
         .padding(.horizontal, 25)
         .padding(.vertical, 8)
@@ -53,8 +53,8 @@ struct TrackView: View {
 
 struct TrackViewFromId: View {
     @State var id: String
-    @StateObject var trackViewModel = SingleTrackViewModel()
-    @StateObject var likedSongsViewModel = LikedSongsViewModel()
+    @StateObject var trackViewModel = ViewModel<TrackObjectResult>()
+    @StateObject var likedSongsViewModel = ViewModel<User>()
     @EnvironmentObject var playingSongViewModel: PlayingSongViewModel
 
     var body: some View {
@@ -100,11 +100,12 @@ struct TrackViewFromId: View {
                 Image(systemName: "ellipsis")
                     .foregroundStyle(.gray)
                     .onTapGesture {
-                        likedSongsViewModel.UnLikeSong(id: id)
+                        likedSongsViewModel.Unlike(id: id, url: "http://localhost:8080/users/likes/1",
+                                                   input: UpdateUserLikesInput(likeId: id))
                     }
             }
         }.onAppear {
-            trackViewModel.fetch(id: id)
+            trackViewModel.fetch(url: "https://api.spotify.com/v1/tracks/\(id)")
         }
         .onTapGesture {
             if let track = trackViewModel.data {

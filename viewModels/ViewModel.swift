@@ -4,16 +4,16 @@ struct UpdateLikedAlbum: Encodable {
     let albumId: String
 }
 
-class LPViewModel: ObservableObject {
-    @Published var data: SpotifyAlbum?
-    var id: String
+protocol DataContainer: Decodable {
+    associatedtype DataType: Decodable
+    var data: [DataType] { get }
+}
 
-    init(id: String) {
-        self.id = id
-    }
+class ViewModel<T>: ObservableObject where T: Decodable {
+    @Published var data: T?
 
-    func fetch() {
-        guard let url = URL(string: "https://api.spotify.com/v1/albums/\(id)") else {
+    func fetch(url: String) {
+        guard let url = URL(string: url) else {
             return
         }
 
@@ -24,7 +24,7 @@ class LPViewModel: ObservableObject {
                 return
             }
             do {
-                let decodedData = try JSONDecoder().decode(SpotifyAlbum.self, from: data)
+                let decodedData = try JSONDecoder().decode(T.self, from: data)
                 DispatchQueue.main.async {
                     self?.data = decodedData
                 }
@@ -36,14 +36,14 @@ class LPViewModel: ObservableObject {
         task.resume()
     }
 
-    func LikeAlbum(id: String) {
-        guard let url = URL(string: "http://localhost:8080/users/liked-albums/1") else { return }
+    func Like<I>(id: String, url: String, input: I) where I: Encodable {
+        guard let url = URL(string: url) else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
         do {
-            let jsonData = try JSONEncoder().encode(UpdateLikedAlbum(albumId: id))
+            let jsonData = try JSONEncoder().encode(input)
             request.httpBody = jsonData
 
             print(jsonData)
@@ -74,17 +74,15 @@ class LPViewModel: ObservableObject {
         }
     }
 
-    func UnlikeAlbum(id: String) {
-        guard let url = URL(string: "http://localhost:8080/users/liked-albums/1") else { return }
+    func Unlike<I>(id: String, url: String, input: I) where I: Encodable {
+        guard let url = URL(string: url) else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
         do {
-            let jsonData = try JSONEncoder().encode(UpdateLikedAlbum(albumId: id))
+            let jsonData = try JSONEncoder().encode(input)
             request.httpBody = jsonData
-
-            print(jsonData)
 
             URLSession.shared.dataTask(with: request) { _, response, error in
                 if let error = error {

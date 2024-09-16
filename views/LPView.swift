@@ -2,14 +2,13 @@ import SwiftUI
 
 struct LPView: View {
     @State var id: String
-    @StateObject var lpViewModel: LPViewModel
-    @StateObject var searchViewModel: SearchViewModel = .init()
-    @StateObject var likedSongsViewModel: LikedSongsViewModel = .init()
-    @StateObject var userViewModel: UserViewModel = .init()
+    @StateObject var lpViewModel: ViewModel<SpotifyAlbum> = .init()
+    @StateObject var searchViewModel: ViewModel<AlbumResult> = .init()
+    @StateObject var likedSongsViewModel: ViewModel<User> = .init()
+    @StateObject var userViewModel: ViewModel<User> = .init()
 
     init(id: String) {
         self.id = id
-        _lpViewModel = StateObject(wrappedValue: LPViewModel(id: id))
     }
 
     var body: some View {
@@ -98,9 +97,12 @@ struct LPView: View {
                                     .padding(.horizontal, 5)
                                     .onTapGesture {
                                         if user.likedAlbums.contains(id) {
-                                            lpViewModel.UnlikeAlbum(id: id)
+                                            lpViewModel.Unlike(id: id,
+                                                               url: "http://localhost:8080/users/liked-albums/1",
+                                                               input: UpdateLikedAlbum(albumId: id))
                                         } else {
-                                            lpViewModel.LikeAlbum(id: id)
+                                            lpViewModel.Like(id: id, url: "http://localhost:8080/users/liked-albums/1",
+                                                             input: UpdateLikedAlbum(albumId: id))
                                         }
                                     }
                             } else {
@@ -111,7 +113,9 @@ struct LPView: View {
                                     .padding(.horizontal, 5)
                                     .foregroundStyle(.white)
                                     .onTapGesture {
-                                        lpViewModel.LikeAlbum(id: id)
+                                        lpViewModel.Like(id: id, url:
+                                            "http://localhost:8080/users/liked-albums/1",
+                                            input: UpdateLikedAlbum(albumId: id))
                                     }
                             }
 
@@ -167,7 +171,7 @@ struct LPView: View {
                                 .foregroundStyle(.gray)
                         }
                         .onTapGesture {
-                            likedSongsViewModel.LikeSong(id: album.tracks.items[i].id)
+                            likedSongsViewModel.Like(id: album.tracks.items[i].id, url: "http://localhost:8080/users/likes/1", input: UpdateUserLikesInput(likeId: album.tracks.items[i].id))
                         }
                         .padding(.horizontal, 25)
                         .padding(.vertical, 8)
@@ -200,7 +204,7 @@ struct LPView: View {
                     .padding(.leading, 20)
                     .padding(.top, 10)
                     .onAppear {
-                        searchViewModel.search(search: album.artists[0].name)
+                        searchViewModel.fetch(url: "https://api.spotify.com/v1/search?q=artist:\(album.artists[0].name)&type=album")
                     }
 
                     HomeViewTitle(title: "More by \(album.artists[0].name)")
@@ -225,8 +229,8 @@ struct LPView: View {
             .padding(.bottom, 20)
             .background(Color(red: 25/255, green: 25/255, blue: 25/255))
             .onAppear {
-                lpViewModel.fetch()
-                userViewModel.fetch()
+                lpViewModel.fetch(url: "https://api.spotify.com/v1/albums/\(id)")
+                userViewModel.fetch(url: "http://localhost:8080/users/1")
             }
         }.navigationTitle("")
     }

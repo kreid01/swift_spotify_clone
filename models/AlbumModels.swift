@@ -40,3 +40,20 @@ struct AlbumImage: Decodable {
     let height: Int
     let width: Int
 }
+
+struct SearchSpotifyAlbum: Decodable, Identifiable {
+    let total_tracks: Int
+    let id: String
+    let images: [AlbumImage]?
+    let name: String
+    let release_date: String
+    let artists: [Artist]
+}
+
+struct AlbumResult: Decodable {
+    var albums: ItemResult
+}
+
+struct ItemResult: Decodable {
+    let items: [SearchSpotifyAlbum]
+}
