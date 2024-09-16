@@ -13,7 +13,7 @@ struct LPView: View {
     }
 
     var body: some View {
-        NavigationView {
+        VStack {
             ScrollView {
                 Spacer(minLength: 100)
                 if let album = lpViewModel.data {

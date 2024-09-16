@@ -11,7 +11,7 @@ struct ArtistView: View {
     @StateObject var userViewModel = UserViewModel()
 
     var body: some View {
-        NavigationView {
+        VStack {
             ScrollView {
                 Spacer(minLength: 50)
                 if let artist = artistViewModel.data {
@@ -79,13 +79,13 @@ struct ArtistView: View {
                         HStack {
                             if let user = userViewModel.data {
                                 Text(user.followedArtists.contains(id) ? "Following" : "Follow")
-                                    .frame(width: 80) // Set width of the button
-                                    .padding(10) // Add padding around the text
-                                    .background(user.followedArtists.contains(id) ? Color.green : Color.clear) // Green if followed, transparent if not
-                                    .cornerRadius(20) // Apply rounded corners to the background
-                                    .overlay( // Add the white border
+                                    .frame(width: 80)
+                                    .padding(10)
+                                    .background(user.followedArtists.contains(id) ? Color.green : Color.clear)
+                                    .cornerRadius(20)
+                                    .overlay(
                                         RoundedRectangle(cornerRadius: 20)
-                                            .stroke(Color.white, lineWidth: 1) // White border with width 1
+                                            .stroke(Color.white, lineWidth: 1)
                                     )
                                     .foregroundColor(.white) // Set t
                                     .onTapGesture {
