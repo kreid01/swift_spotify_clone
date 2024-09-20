@@ -18,7 +18,6 @@ struct AlbumFromIdView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 110, height: 110)
-                                        .background(.white)
                                         .cornerRadius(5)
                                         .scaledToFit()
                                 case .empty:
@@ -28,7 +27,8 @@ struct AlbumFromIdView: View {
                                 @unknown default:
                                     fatalError()
                             }
-
+                        }
+                        VStack {
                             Text(album.name)
                                 .lineLimit(1)
                                 .foregroundStyle(.white)
@@ -42,7 +42,16 @@ struct AlbumFromIdView: View {
                 }
             }.onAppear {
                 albumViewModel.fetch(url: "https://api.spotify.com/v1/albums/\(id)")
-            }.frame(height: 160)
+            }
         }
     }
 }
+
+#if DEBUG
+struct UIView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+            .environmentObject(PlayingSongViewModel())
+    }
+}
+#endif

@@ -109,9 +109,10 @@ struct TrackViewFromId: View {
         }
         .onTapGesture {
             if let track = trackViewModel.data {
-                playingSongViewModel.imageUrl = track.album.images?[0].url
-                playingSongViewModel.artist = track.artists.map { $0.name }
-                playingSongViewModel.song = track.name
+                playingSongViewModel.AddSong(song: PlayingSongModel(
+                    artist: track.artists.map { $0.name },
+                    song: track.name, imageUrl: track.album.images?[0].url ?? ""
+                ))
             }
         }
         .padding(.vertical, 8)

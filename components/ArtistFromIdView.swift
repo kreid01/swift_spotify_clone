@@ -42,7 +42,7 @@ struct ArtistFromIdView: View {
                 }
             }.onAppear {
                 artistViewModel.fetch(url: "https://api.spotify.com/v1/artists/\(id)")
-            }.frame(height: 160)
+            }
         }
     }
 }

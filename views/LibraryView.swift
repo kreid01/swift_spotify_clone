@@ -70,11 +70,11 @@ struct LibraryView: View {
                                             .offset(x: 5, y: -5)
                                     }
                                 }
-                                ForEach(0 ..< user.likedAlbums.count) { i in
-                                    AlbumFromIdView(id: user.likedAlbums[i])
-                                }
                                 ForEach(0 ..< user.followedArtists.count) { i in
                                     ArtistFromIdView(id: user.followedArtists[i])
+                                }
+                                ForEach(0 ..< user.likedAlbums.count) { i in
+                                    AlbumFromIdView(id: user.likedAlbums[i])
                                 }
                             }
                         }
@@ -100,6 +100,11 @@ struct LibraryView: View {
     }
 }
 
-#Preview {
-    LibraryView()
+#if DEBUG
+struct LibrarySwiftUIView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+            .environmentObject(PlayingSongViewModel())
+    }
 }
+#endif

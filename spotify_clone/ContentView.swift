@@ -21,13 +21,16 @@ struct ContentView: View {
             .toolbarBackground(
                 .black,
                 for: .tabBar)
-            SearchView()
-                .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
-                }
-                .toolbarBackground(
-                    .black,
-                    for: .tabBar)
+            VStack {
+                SearchView()
+                PlayingSongView()
+            }
+            .tabItem {
+                Label("Search", systemImage: "magnifyingglass")
+            }
+            .toolbarBackground(
+                .black,
+                for: .tabBar)
             VStack {
                 LibraryView()
                 PlayingSongView()
@@ -42,58 +45,82 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView()
+#if DEBUG
+struct ContentSwiftUIView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+            .environmentObject(PlayingSongViewModel())
+    }
 }
+#endif
 
 struct PlayingSongView: View {
     @EnvironmentObject var playingSongViewModel: PlayingSongViewModel
 
     var body: some View {
-        if let _ = playingSongViewModel.song {
+        if playingSongViewModel.songs.count > 0 {
             HStack {
                 HStack {
-                    if let image = playingSongViewModel.imageUrl {
-                        CacheAsyncImage(url: URL(string: image)!) {
-                            phase in
-                            switch phase {
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 50, height: 50)
-                                        .scaledToFit()
-                                case .empty:
-                                    ProgressView()
-                                case .failure:
-                                    ProgressView()
-                                @unknown default:
-                                    fatalError()
-                            }
+                    CacheAsyncImage(url: URL(string: playingSongViewModel.songs[0].imageUrl)!) {
+                        phase in
+                        switch phase {
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 50, height: 50)
+                                    .scaledToFit()
+                            case .empty:
+                                ProgressView()
+                            case .failure:
+                                ProgressView()
+                            @unknown default:
+                                fatalError()
                         }
-                    }
-                    VStack {
-                        if let song = playingSongViewModel.song {
-                            Text(song).foregroundStyle(.white)
-                                .font(.system(size: 12))
-                                .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                    }.padding(.bottom, 10)
+                }
+                VStack {
+                    Text(playingSongViewModel.songs[0].song).foregroundStyle(.white)
+                        .font(.system(size: 12))
+                        .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                    Text(playingSongViewModel.songs[0].artist[0]).foregroundStyle(.gray)
+                        .font(.system(size: 12))
+                        .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                }
+                .offset(x: -20)
+                .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+
+                HStack {
+                    Image(systemName: "forward.fill")
+                        .padding(.horizontal, 10)
+                        .onTapGesture {
+                            playingSongViewModel.Next()
                         }
-                        if let artists = playingSongViewModel.artist {
-                            Text(artists[0]).foregroundStyle(.gray)
-                                .font(.system(size: 12))
-                                .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
-                        }
-                    }
-                }.padding(.bottom, 10)
+                    Image(systemName: "play.fill")
+                }.foregroundStyle(.white)
+                    .offset(x: -20)
             }
-            .background(Color(red: 25/255, green: 25/255, blue: 25/255))
-            .frame(height: 55)
+            .frame(width: 400, height: 70)
+            .background(Color(red: 25/255, green: 35/255, blue: 25/255))
         }
     }
 }
 
+struct PlayingSongModel {
+    var artist: [String]
+    var song: String
+    var imageUrl: String
+}
+
 class PlayingSongViewModel: ObservableObject {
-    @Published var artist: [String]?
-    @Published var song: String?
-    @Published var imageUrl: String?
+    @Published var songs: [PlayingSongModel] = []
+
+    func AddSong(song: PlayingSongModel) {
+        songs.append(song)
+        print(songs)
+    }
+
+    func Next() {
+        songs.removeFirst()
+    }
 }

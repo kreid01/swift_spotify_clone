@@ -6,6 +6,13 @@ struct LPView: View {
     @StateObject var searchViewModel: ViewModel<AlbumResult> = .init()
     @StateObject var likedSongsViewModel: ViewModel<UserResult> = .init()
     @StateObject var userViewModel: ViewModel<UserResult> = .init()
+    @EnvironmentObject var playingSongViewModel: PlayingSongViewModel
+
+    @State var song: Track?
+
+    func SetSelectedTrackNil() {
+        song = nil
+    }
 
     init(id: String) {
         self.id = id
@@ -168,9 +175,16 @@ struct LPView: View {
                             }
                             Spacer()
                             Image(systemName: "ellipsis")
+                                .onTapGesture {
+                                    song = album.tracks.items[i]
+                                }
                                 .foregroundStyle(.gray)
                         }
                         .onTapGesture {
+                            playingSongViewModel.AddSong(song: PlayingSongModel(
+                                artist: album.tracks.items[i].artists.map { $0.name }, song: album.tracks.items[i].name,
+                                imageUrl: album.images[0].url
+                            ))
                             likedSongsViewModel.Like(id: album.tracks.items[i].id, url: "http://localhost:8080/users/likes/1", input: UpdateUserLikesInput(likeId: album.tracks.items[i].id))
                         }
                         .padding(.horizontal, 25)
@@ -233,6 +247,11 @@ struct LPView: View {
                 userViewModel.fetch(url: "http://localhost:8080/users/1")
             }
         }.navigationTitle("")
+        if song != nil {
+            if let album = lpViewModel.data {
+                SongPullView(image: album.images[0].url, song: song!, album: album.name, reset: SetSelectedTrackNil)
+            }
+        }
     }
 }
 
@@ -263,5 +282,90 @@ func convertMillisecondsToHoursMinutes(ms: Int) -> String {
         return "\(hours)hr \(minutes)min"
     } else {
         return "\(minutes)min"
+    }
+}
+
+struct SongPullView: View {
+    @State var image: String
+    @State var song: Track
+    @State var album: String
+    @State var reset: () -> Void
+
+    @EnvironmentObject var playingSongViewModel: PlayingSongViewModel
+    @StateObject var likedSongsViewModel = ViewModel<Track>()
+
+    var body: some View {
+        VStack {
+            HStack {
+                CacheAsyncImage(url: URL(string: image)!) {
+                    phase in
+                    switch phase {
+                        case .success(let image):
+                            HStack {
+                                image
+                                    .resizable()
+                                    .frame(width: 50, height: 50)
+                            }
+                            .cornerRadius(6)
+                            .frame(width: 45, height: 55)
+                        case .empty:
+                            ProgressView()
+                        case .failure:
+                            ProgressView()
+                        @unknown default:
+                            fatalError()
+                    }
+                }
+                VStack {
+                    Text(song.name)
+                        .fontWeight(.bold)
+                        .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                    Text(album)
+                        .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                }
+            }
+            .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+
+            Divider().foregroundColor(.gray)
+            VStack {
+                HStack {
+                    Image(systemName: "heart")
+                    Text("Add to Liked Songs")
+                }.frame(height: 30)
+                    .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                HStack {
+                    Image(systemName: "plus.circle")
+                    Text("Add to playlist")
+                }.frame(height: 30)
+                    .onTapGesture {
+                        likedSongsViewModel.Like(id: song.id, url: "http://localhost:8080/users/likes/1", input: UpdateUserLikesInput(likeId: song.id))
+                        reset()
+                    }
+                    .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                HStack {
+                    Image(systemName: "minus.circle")
+                    Text("Hide song")
+                }.frame(height: 30)
+                    .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                HStack {
+                    Image(systemName: "plus.app")
+                    Text("Add to queue")
+                }.frame(height: 30)
+                    .onTapGesture {
+                        playingSongViewModel.AddSong(song: PlayingSongModel(
+                            artist: song.artists.map { $0.name }, song: song.name, imageUrl: image
+                        ))
+                        reset()
+                    }
+                    .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                HStack {
+                    Image(systemName: "square.and.arrow.up")
+                    Text("Share")
+                }.frame(height: 30)
+                    .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+            }
+            .padding(.horizontal, 25)
+        }.foregroundStyle(.white)
+            .background(Color(red: 20/255, green: 30/255, blue: 30/255))
     }
 }

@@ -88,5 +88,7 @@ struct LikedSongsView: View {
 }
 
 #Preview {
-    LikedSongsView()
+    VStack {
+        LikedSongsView()
+    }
 }
