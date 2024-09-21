@@ -70,7 +70,9 @@ struct LikedSongsView: View {
                     .foregroundStyle(.white)
                     if let likedSongs = likedSongsViewModel.data?.data.likes {
                         ForEach(0 ..< likedSongs.count) { i in
-                            TrackViewFromId(id: likedSongs[i]).onTapGesture {}
+                            TrackViewFromId(id: likedSongs[i]).onTapGesture {
+                                
+                            }
                         }
                     }
                 }

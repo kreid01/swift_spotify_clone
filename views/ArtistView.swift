@@ -14,6 +14,11 @@ struct ArtistView: View {
     @StateObject var likedSongsViewModel = ViewModel<User>()
     @StateObject var userViewModel = ViewModel<User>()
 
+    @State var song: Track?
+    func SetSelectedTrackNil() {
+        song = nil
+    }
+
     var body: some View {
         VStack {
             ScrollView {

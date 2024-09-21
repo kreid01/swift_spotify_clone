@@ -28,18 +28,19 @@ struct ArtistFromIdView: View {
                                 @unknown default:
                                     fatalError()
                             }
-
-                            Text(artist.name)
-                                .lineLimit(1)
-                                .foregroundStyle(.white)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            Text("Artist")
-                                .lineLimit(1)
-                                .foregroundStyle(.gray)
-                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
+
+                        Text(artist.name)
+                            .lineLimit(1)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text("Artist")
+                            .lineLimit(1)
+                            .foregroundStyle(.gray)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
+
             }.onAppear {
                 artistViewModel.fetch(url: "https://api.spotify.com/v1/artists/\(id)")
             }

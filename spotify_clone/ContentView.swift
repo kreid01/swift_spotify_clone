@@ -13,34 +13,33 @@ struct ContentView: View {
             VStack {
                 HomeView()
                 PlayingSongView()
-            }
-            .background(Color(red: 25/255, green: 25/255, blue: 25/255))
-            .tabItem {
-                Label("Home", systemImage: "house")
-            }
-            .toolbarBackground(
-                .black,
-                for: .tabBar)
+            }.background(Color(red: 25/255, green: 25/255, blue: 25/255))
+                .tabItem {
+                    Label("Home", systemImage: "house")
+                }
+                .toolbarBackground(
+                    .black,
+                    for: .tabBar)
             VStack {
                 SearchView()
                 PlayingSongView()
-            }
-            .tabItem {
-                Label("Search", systemImage: "magnifyingglass")
-            }
-            .toolbarBackground(
-                .black,
-                for: .tabBar)
+            }.background(Color(red: 25/255, green: 25/255, blue: 25/255))
+                .tabItem {
+                    Label("Search", systemImage: "magnifyingglass")
+                }
+                .toolbarBackground(
+                    .black,
+                    for: .tabBar)
             VStack {
                 LibraryView()
                 PlayingSongView()
-            }
-            .tabItem {
-                Label("Library", systemImage: "music.note.house.fill")
-            }
-            .toolbarBackground(
-                .black,
-                for: .tabBar)
+            }.background(Color(red: 25/255, green: 25/255, blue: 25/255))
+                .tabItem {
+                    Label("Library", systemImage: "music.note.house.fill")
+                }
+                .toolbarBackground(
+                    .black,
+                    for: .tabBar)
         }.accentColor(.white)
     }
 }

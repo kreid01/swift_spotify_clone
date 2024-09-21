@@ -77,7 +77,7 @@ struct LibraryView: View {
                                     AlbumFromIdView(id: user.likedAlbums[i])
                                 }
                             }
-                        }
+                        }.id("")
                     } else {
                         ProgressView()
                     }
