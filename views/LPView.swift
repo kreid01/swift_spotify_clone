@@ -9,9 +9,8 @@ struct LPView: View {
     @EnvironmentObject var playingSongViewModel: PlayingSongViewModel
     @EnvironmentObject var pullsongViewModel: PullSongViewModel
 
-    @State private var scrollViewOffset: CGFloat = 0
-    
     @State private var hideNavBar: Bool = false
+    @State private var scrollViewOffset: CGFloat = 0
     
     func getScaleFor(minY: CGFloat) -> CGFloat {
         let minYRange: CGFloat = 60 - -290
@@ -29,11 +28,7 @@ struct LPView: View {
                         Color.clear
                             .onChange(of: geo.frame(in: .global).minY) { minY in
                                 self.scrollViewOffset = minY
-                                if minY <= 290 {
-                                    self.hideNavBar = false
-                                } else {
-                                    self.hideNavBar = false
-                                }
+                                hideNavBar = minY <= -290
                             }
                     }
                     .frame(height: 0)
@@ -283,7 +278,7 @@ struct LPView: View {
                     userViewModel.fetch(url: "http://localhost:8080/users/1")
                 }
             }
-            .navigationBarTitle("")
+            .navigationTitle(!hideNavBar ? lpViewModel.data?.name ?? "" : "")
             .navigationBarTitleDisplayMode(.inline)
             .background(Color(red: 25/255, green: 25/255, blue: 25/255))
         }

@@ -15,6 +15,7 @@ struct ArtistView: View {
     @StateObject var userViewModel = ViewModel<User>()
 
     @State var opacity: CGFloat = 1
+    @State var hideNavBar = false
 
     func calculateOpacity(for scrollViewOffset: CGFloat) -> Double {
         let startOffset: CGFloat = 60
@@ -32,7 +33,12 @@ struct ArtistView: View {
                     Color.clear
                         .onChange(of: geo.frame(in: .global).minY) { minY in
                             self.opacity = calculateOpacity(for: minY)
-                            print(opacity)
+
+                            if minY <= -320 {
+                                self.hideNavBar = false
+                            } else {
+                                self.hideNavBar = true
+                            }
                         }
                 }
                 .frame(height: 0)
@@ -196,9 +202,16 @@ struct ArtistView: View {
         }.onAppear {
             artistViewModel.fetch(url: "https://api.spotify.com/v1/artists/\(id)")
         }.frame(width: 400)
+            .navigationTitle(!hideNavBar ? artistViewModel.data?.name ?? "" : "")
     }
 }
 
-#Preview {
-    ArtistView(id: "2xvtxDNInKDV4AvGmjw6d1")
+#if DEBUG
+struct LPSwiftUIView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+            .environmentObject(PlayingSongViewModel())
+            .environmentObject(PullSongViewModel())
+    }
 }
+#endif
