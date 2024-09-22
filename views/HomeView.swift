@@ -5,9 +5,21 @@ struct HomeView: View {
     @StateObject var dissectionViewModel = ViewModel<AlbumResult>()
     @StateObject var blackBearViewModel = ViewModel<AlbumResult>()
     @StateObject var paramoreViewModel = ViewModel<AlbumResult>()
+    
+    @State var screenOffsetX: CGFloat = 0
+    @State var opacity: Double = 1
+    @State var menuOffsetX: CGFloat = -400
+
+    func ChangeScreenOffset(offset: CGFloat) {
+        screenOffsetX = offset
+        if offset == 0 {
+            opacity = 1
+        }
+    }
 
     var body: some View {
         NavigationView {
+            ProfileSideBar()
             VStack {
                 FilterView()
                 ScrollView {

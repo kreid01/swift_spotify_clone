@@ -34,6 +34,8 @@ struct LPView: View {
                                 } else {
                                     self.hideNavBar = false
                                 }
+                                
+                                print(hideNavBar)
                             }
                     }
                     .frame(height: 0)
@@ -280,10 +282,10 @@ struct LPView: View {
                     userViewModel.fetch(url: "http://localhost:8080/users/1")
                 }
             }
-            .navigationBarTitle(self.hideNavBar ? "" : lpViewModel.data?.name ?? "")
+            .navigationBarTitle("")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarHidden(true)
             .background(Color(red: 25/255, green: 25/255, blue: 25/255))
-            .navigationBarHidden(self.hideNavBar)
         }
     }
 }

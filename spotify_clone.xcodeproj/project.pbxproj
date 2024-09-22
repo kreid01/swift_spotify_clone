@@ -38,6 +38,7 @@
 		85EB6BA62C98CEF500DB60BC /* ArtistFromIdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6BA52C98CEF500DB60BC /* ArtistFromIdView.swift */; };
 		85EB6BA82C98CF3C00DB60BC /* AlbumFromIdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6BA72C98CF3C00DB60BC /* AlbumFromIdView.swift */; };
 		85EB6BAA2C9F4F7D00DB60BC /* SongPullView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6BA92C9F4F7D00DB60BC /* SongPullView.swift */; };
+		85EB6BAC2CA0815100DB60BC /* PullSongView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6BAB2CA0815100DB60BC /* PullSongView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +75,7 @@
 		85EB6BA52C98CEF500DB60BC /* ArtistFromIdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistFromIdView.swift; sourceTree = "<group>"; };
 		85EB6BA72C98CF3C00DB60BC /* AlbumFromIdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumFromIdView.swift; sourceTree = "<group>"; };
 		85EB6BA92C9F4F7D00DB60BC /* SongPullView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongPullView.swift; sourceTree = "<group>"; };
+		85EB6BAB2CA0815100DB60BC /* PullSongView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullSongView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +147,7 @@
 				85EB6B792C8F63AA00DB60BC /* ArtistView.swift */,
 				85EB6B952C91FD1B00DB60BC /* LibraryView.swift */,
 				85EB6B972C92DD3500DB60BC /* LikedSongsView.swift */,
+				85EB6BAB2CA0815100DB60BC /* PullSongView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -280,6 +283,7 @@
 				85EB6B842C8F828D00DB60BC /* Token.swift in Sources */,
 				85EB6BA82C98CF3C00DB60BC /* AlbumFromIdView.swift in Sources */,
 				85EB6B902C90660D00DB60BC /* ArtistImage.swift in Sources */,
+				85EB6BAC2CA0815100DB60BC /* PullSongView.swift in Sources */,
 				85EB6B9A2C9301DA00DB60BC /* ProfileSidebar.swift in Sources */,
 				850198222C8CAC78000BA900 /* HomeView.swift in Sources */,
 				850197F52C8B1ED7000BA900 /* ContentView.swift in Sources */,

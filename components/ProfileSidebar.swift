@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProfileSideBar: View {
     @Binding var menuOffset: CGFloat
+    @State var changeScreenOffset: (_ offset: CGFloat) -> Void
 
     var body: some View {
         VStack {
@@ -54,6 +55,39 @@ struct ProfileSideBar: View {
         .frame(width: 350)
         .background(.gray)
         .zIndex(5)
+        .gesture(
+            DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                .onEnded { value in
+                    if value.translation.width < -100 {
+                        withAnimation {
+                            menuOffset = -400
+                            changeScreenOffset(0)
+                        }
+                    } else {
+                        withAnimation {
+                            menuOffset = -25
+                            changeScreenOffset(350)
+                        }
+                    }
+                }
+                .onChanged { value in
+                    if value.translation.width < 0 {
+                        withAnimation {
+                            menuOffset = -25 + value.translation.width
+                            changeScreenOffset(350 + value.translation.width)
+                        }
+                    }
+                })
         .offset(x: menuOffset)
     }
 }
+
+#if DEBUG
+struct MSwiftUIView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+            .environmentObject(PlayingSongViewModel())
+            .environmentObject(PullSongViewModel())
+    }
+}
+#endif
