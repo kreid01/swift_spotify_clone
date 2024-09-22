@@ -53,11 +53,11 @@ struct TrackView: View {
 
 struct TrackViewFromId: View {
     @State var id: String
-    @State var setSelectedTrack: (Track, TrackObject) -> Void
 
     @StateObject var trackViewModel = ViewModel<TrackObjectResult>()
     @StateObject var likedSongsViewModel = ViewModel<User>()
     @EnvironmentObject var playingSongViewModel: PlayingSongViewModel
+    @EnvironmentObject var pullSongViewModel: PullSongViewModel
 
     var body: some View {
         HStack {
@@ -103,7 +103,14 @@ struct TrackViewFromId: View {
                     .foregroundStyle(.gray)
                     .onTapGesture {
                         if let track = trackViewModel.data {
-                            setSelectedTrack(Track(artists: [], id: id, name: track.name, track_number: -1, duration_ms: -1, uri: ""), data.album)
+                            pullSongViewModel.PullSong(_song: PullSongModel(
+                                artist: track.artists.compactMap { $0.name },
+                                album: track.album.name,
+                                track: PullSongTrack(name: track.name, id: id,
+                                                     artists:
+                                                     track.artists.map { $0.name },
+                                                     imageUrl: track.album.images![0].url)
+                            ))
                         }
                     }
             }

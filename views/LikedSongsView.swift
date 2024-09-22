@@ -21,18 +21,6 @@ struct LikedSongsView: View {
     var selectedMediaFilter = ""
     @StateObject var likedSongsViewModel: ViewModel<UserResult> = .init()
 
-    @State var song: Track?
-    @State var album: TrackObject?
-
-    func SetSelectedTrackNil() {
-        song = nil
-    }
-
-    func SetSelectedTack(_track: Track, _album: TrackObject) {
-        song = _track
-        album = _album
-    }
-
     var body: some View {
         NavigationView {
             ZStack {
@@ -83,7 +71,7 @@ struct LikedSongsView: View {
                         .foregroundStyle(.white)
                         if let likedSongs = likedSongsViewModel.data?.data.likes {
                             ForEach(0 ..< likedSongs.count) { i in
-                                TrackViewFromId(id: likedSongs[i], setSelectedTrack: SetSelectedTack)
+                                TrackViewFromId(id: likedSongs[i])
                             }
                         }
                     }

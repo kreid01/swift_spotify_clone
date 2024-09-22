@@ -9,6 +9,10 @@ struct LPView: View {
     @EnvironmentObject var playingSongViewModel: PlayingSongViewModel
     @EnvironmentObject var pullsongViewModel: PullSongViewModel
 
+    @State private var scrollViewOffset: CGFloat = 0
+
+    @State private var imageScale: CGFloat = 1
+
     init(id: String) {
         self.id = id
     }
@@ -26,15 +30,23 @@ struct LPView: View {
                                     image
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 260, height: 500)
+                                        .frame(width: 260 * imageScale, height: 500 * imageScale)
                                         .scaledToFit()
+
                                 case .empty:
                                     ProgressView()
+
                                 case .failure:
                                     ProgressView()
+
                                 @unknown default:
                                     fatalError()
                             }
+                        }
+                        .background {
+                            LinearGradient(gradient: Gradient(colors: [.blue, Color(red: 25/255, green: 25/255, blue: 25/255)]), startPoint: .top, endPoint: .bottom).zIndex(1)
+                                .frame(width: 400, height: 500)
+                                .offset(y: -60)
                         }
                         Spacer(minLength: 100)
                         Text(lpViewModel.data?.name ?? "")
@@ -242,9 +254,20 @@ struct LPView: View {
                             .foregroundStyle(.white)
                     }
                 }
+                .background(Color(red: 25/255, green: 25/255, blue: 25/255))
+                .background(
+                    GeometryReader { geo in
+                        Color.clear
+                            .onAppear {
+                                scrollViewOffset = geo.frame(in: .global).minY
+                            }
+                            .onChange(of: geo.frame(in: .global).minY) { newValue in
+                                scrollViewOffset = newValue
+                                print(scrollViewOffset)
+                            }
+                    })
                 .frame(width: 400)
                 .padding(.bottom, 20)
-                .background(Color(red: 25/255, green: 25/255, blue: 25/255))
                 .onAppear {
                     lpViewModel.fetch(url: "https://api.spotify.com/v1/albums/\(id)")
                     userViewModel.fetch(url: "http://localhost:8080/users/1")
