@@ -14,11 +14,11 @@ struct LPView: View {
     @State private var hideNavBar: Bool = false
     
     func getScaleFor(minY: CGFloat) -> CGFloat {
-        let minYRange: CGFloat = 60 - -290 // Range from 60 to -290, total of 350
-        let currentOffset = min(max(minY, -290), 60) // Clamp minY between -290 and 60
-        let scale = (currentOffset + 290)/minYRange // Adjust the formula for negative range
+        let minYRange: CGFloat = 60 - -290
+        let currentOffset = min(max(minY, -290), 60)
+        let scale = (currentOffset + 290)/minYRange
          
-        return scale // Scale value between 0 and 1
+        return scale
     }
     
     var body: some View {
@@ -228,7 +228,7 @@ struct LPView: View {
                             Text(convertDateString(album.release_date)!)
                                 .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
                             HStack {
-                                Text("\(album.total_tracks) songs")
+                                Text("\(album.total_tracks ?? 0) songs")
                                 Text("-")
                                 Text(convertMillisecondsToHoursMinutes(ms: album.tracks.items.reduce(0) { x, y in
                                     x + y.duration_ms
@@ -240,15 +240,18 @@ struct LPView: View {
                         .foregroundStyle(.white)
                         .padding(.leading, 25)
                         
-                        HStack {
-                            Circle().frame(width: 50, height: 50)
-                            Text(album.artists[0].name)
-                                .font(.system(size: 18))
-                                .foregroundStyle(.white)
-                                .fontWeight(.bold)
+                        NavigationLink(destination: ArtistView(id: album.artists[0].id)) {
+                            HStack {
+                                ArtistImage(artistId: album.artists[0].id, height: 50, width: 50)
+                                    .frame(width: 50, height: 50)
+                                Text(album.artists[0].name)
+                                    .foregroundStyle(.white)
+                                    .fontWeight(.bold)
+                            }
+                            Spacer()
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.leading, 20)
+                        .padding(.leading, 25)
                         .padding(.top, 10)
                         .onAppear {
                             searchViewModel.fetch(url: "https://api.spotify.com/v1/search?q=artist:\(album.artists[0].name)&type=album")
