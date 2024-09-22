@@ -53,6 +53,8 @@ struct TrackView: View {
 
 struct TrackViewFromId: View {
     @State var id: String
+    @State var setSelectedTrack: (Track, TrackObject) -> Void
+
     @StateObject var trackViewModel = ViewModel<TrackObjectResult>()
     @StateObject var likedSongsViewModel = ViewModel<User>()
     @EnvironmentObject var playingSongViewModel: PlayingSongViewModel
@@ -100,8 +102,9 @@ struct TrackViewFromId: View {
                 Image(systemName: "ellipsis")
                     .foregroundStyle(.gray)
                     .onTapGesture {
-                        likedSongsViewModel.Unlike(id: id, url: "http://localhost:8080/users/likes/1",
-                                                   input: UpdateUserLikesInput(likeId: id))
+                        if let track = trackViewModel.data {
+                            setSelectedTrack(Track(artists: [], id: id, name: track.name, track_number: -1, duration_ms: -1, uri: ""), data.album)
+                        }
                     }
             }
         }.onAppear {

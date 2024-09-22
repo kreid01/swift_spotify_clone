@@ -37,6 +37,7 @@
 		85EB6BA42C98BED500DB60BC /* TrackModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6BA32C98BED500DB60BC /* TrackModels.swift */; };
 		85EB6BA62C98CEF500DB60BC /* ArtistFromIdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6BA52C98CEF500DB60BC /* ArtistFromIdView.swift */; };
 		85EB6BA82C98CF3C00DB60BC /* AlbumFromIdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6BA72C98CF3C00DB60BC /* AlbumFromIdView.swift */; };
+		85EB6BAA2C9F4F7D00DB60BC /* SongPullView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EB6BA92C9F4F7D00DB60BC /* SongPullView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +73,7 @@
 		85EB6BA32C98BED500DB60BC /* TrackModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackModels.swift; sourceTree = "<group>"; };
 		85EB6BA52C98CEF500DB60BC /* ArtistFromIdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistFromIdView.swift; sourceTree = "<group>"; };
 		85EB6BA72C98CF3C00DB60BC /* AlbumFromIdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumFromIdView.swift; sourceTree = "<group>"; };
+		85EB6BA92C9F4F7D00DB60BC /* SongPullView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongPullView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +165,7 @@
 				85EB6B992C9301DA00DB60BC /* ProfileSidebar.swift */,
 				85EB6BA52C98CEF500DB60BC /* ArtistFromIdView.swift */,
 				85EB6BA72C98CF3C00DB60BC /* AlbumFromIdView.swift */,
+				85EB6BA92C9F4F7D00DB60BC /* SongPullView.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				85EB6BAA2C9F4F7D00DB60BC /* SongPullView.swift in Sources */,
 				85EB6B962C91FD1B00DB60BC /* LibraryView.swift in Sources */,
 				85EB6B652C8DEDCD00DB60BC /* LPView.swift in Sources */,
 				85EB6B6A2C8F5A1200DB60BC /* AlbumHGridView.swift in Sources */,

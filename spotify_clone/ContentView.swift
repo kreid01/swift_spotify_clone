@@ -8,6 +8,8 @@ struct Album {
 }
 
 struct ContentView: View {
+    @EnvironmentObject var pullSongViewModel: PullSongViewModel
+
     var body: some View {
         TabView {
             VStack {
@@ -41,6 +43,9 @@ struct ContentView: View {
                     .black,
                     for: .tabBar)
         }.accentColor(.white)
+            .overlay(
+                SongPullView()
+            )
     }
 }
 
@@ -49,6 +54,7 @@ struct ContentSwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
             .environmentObject(PlayingSongViewModel())
+            .environmentObject(PullSongViewModel())
     }
 }
 #endif
@@ -100,8 +106,30 @@ struct PlayingSongView: View {
                     .offset(x: -20)
             }
             .frame(width: 400, height: 70)
+            .zIndex(0)
             .background(Color(red: 25/255, green: 35/255, blue: 25/255))
         }
+    }
+}
+
+struct PullSongModel {
+    let artist: [String]
+    let album: String
+    let track: PullSongTrack
+}
+
+struct PullSongTrack {
+    let name: String
+    let id: String
+    let artists: [String]
+    let imageUrl: String
+}
+
+class PullSongViewModel: ObservableObject {
+    @Published var song: PullSongModel?
+
+    func PullSong(_song: PullSongModel) {
+        song = _song
     }
 }
 
@@ -116,7 +144,6 @@ class PlayingSongViewModel: ObservableObject {
 
     func AddSong(song: PlayingSongModel) {
         songs.append(song)
-        print(songs)
     }
 
     func Next() {
