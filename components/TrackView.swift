@@ -5,6 +5,8 @@ struct TrackView: View {
     @State var index: Int
     @StateObject var trackViewModel = ViewModel<TrackObjectResult>()
 
+    @EnvironmentObject private var pullSongViewModel: PullSongViewModel
+
     var body: some View {
         HStack {
             Text(String(index + 1))
@@ -38,6 +40,18 @@ struct TrackView: View {
             Spacer()
             Image(systemName: "ellipsis")
                 .foregroundStyle(.gray)
+                .onTapGesture {
+                    if let trackObject = trackViewModel.data {
+                        pullSongViewModel.PullSong(_song: PullSongModel(
+                            artist: track.artists.compactMap { $0.name },
+                            album: trackObject.album.name,
+                            track: PullSongTrack(name: track.name, id: track.id,
+                                                 artists:
+                                                 track.artists.map { $0.name },
+                                                 imageUrl: trackObject.album.images![0].url)
+                        ))
+                    }
+                }
         }.onAppear {
             trackViewModel.fetch(url: "https://api.spotify.com/v1/tracks/\(track.id)")
         }
