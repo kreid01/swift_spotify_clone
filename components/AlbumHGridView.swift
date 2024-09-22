@@ -43,7 +43,3 @@ struct AlbumHGridView: View {
             .offset(x: 14)
     }
 }
-
-#Preview {
-    HomeView()
-}

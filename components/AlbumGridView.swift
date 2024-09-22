@@ -48,7 +48,3 @@ struct AlbumGridView: View {
         })
     }
 }
-
-#Preview {
-    HomeView()
-}

@@ -9,21 +9,12 @@ struct HomeView: View {
     var mediaFilters = ["All", "Music", "Podcasts", "Audiobooks", "Courses"]
     var selectedMediaFilter = "All"
 
-    @State var screenOffsetX: CGFloat = 0
-    @State var opacity: Double = 1
-    @State var menuOffsetX: CGFloat = -400
-
-    func ChangeScreenOffset(offset: CGFloat) {
-        screenOffsetX = offset
-        if offset == 0 {
-            opacity = 1
-        }
-    }
+    var openSidebar: () -> Void
+    var closeSidebar: () -> Void
 
     var body: some View {
         NavigationView {
             ZStack {
-                ProfileSideBar(menuOffset: $menuOffsetX, changeScreenOffset: ChangeScreenOffset)
                 VStack {
                     HStack {
                         Spacer(minLength: 5)
@@ -31,11 +22,7 @@ struct HomeView: View {
                             .frame(width: 32, height: 32)
                             .foregroundStyle(.white)
                             .onTapGesture {
-                                withAnimation {
-                                    menuOffsetX = -25
-                                    screenOffsetX = 350
-                                    opacity = 0.3
-                                }
+                                openSidebar()
                             }
                         Filters(mediaFilters: mediaFilters, selectedMediaFilter: selectedMediaFilter)
                     }.frame(height: 70)
@@ -72,12 +59,10 @@ struct HomeView: View {
                 }
                 .frame(width: 400)
                 .background(Color(red: 25/255, green: 25/255, blue: 25/255))
-                .offset(x: screenOffsetX)
+                .onTapGesture {
+                    closeSidebar()
+                }
             }
         }
     }
-}
-
-#Preview {
-    HomeView()
 }
