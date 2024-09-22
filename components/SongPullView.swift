@@ -50,7 +50,14 @@ struct SongPullView: View {
                     }.frame(height: 30)
                         .onTapGesture {
                             likedSongsViewModel.Like(id: song.track.id, url: "http://localhost:8080/users/likes/1", input: UpdateUserLikesInput(likeId: song.track.id))
-                            pullSongViewModel.song = nil
+                            withAnimation {
+                                self.offsetY = 600
+                            }
+                            withAnimation {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                    pullSongViewModel.song = nil
+                                }
+                            }
                         }
                         .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
                     HStack {
@@ -71,7 +78,14 @@ struct SongPullView: View {
                             playingSongViewModel.AddSong(song: PlayingSongModel(
                                 artist: song.track.artists, song: song.track.name, imageUrl: song.track.imageUrl
                             ))
-                            pullSongViewModel.song = nil
+                            withAnimation {
+                                self.offsetY = 600
+                            }
+                            withAnimation {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                    pullSongViewModel.song = nil
+                                }
+                            }
                         }
                         .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
                     HStack {
@@ -92,9 +106,14 @@ struct SongPullView: View {
                 .gesture(
                     DragGesture(minimumDistance: 0, coordinateSpace: .local)
                         .onEnded { value in
-                            if value.translation.height > 400 {
+                            if value.translation.height > 50 {
                                 withAnimation {
-                                    self.offsetY = 500
+                                    self.offsetY = 600
+                                }
+                                withAnimation {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                        pullSongViewModel.song = nil
+                                    }
                                 }
                             } else {
                                 withAnimation {
