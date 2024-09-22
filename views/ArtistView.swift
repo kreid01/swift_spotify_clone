@@ -14,14 +14,28 @@ struct ArtistView: View {
     @StateObject var likedSongsViewModel = ViewModel<User>()
     @StateObject var userViewModel = ViewModel<User>()
 
-    @State var song: Track?
-    func SetSelectedTrackNil() {
-        song = nil
+    @State var opacity: CGFloat = 1
+
+    func calculateOpacity(for scrollViewOffset: CGFloat) -> Double {
+        let startOffset: CGFloat = 60
+        let endOffset: CGFloat = -320
+
+        let clampedOffset = min(max(scrollViewOffset, endOffset), startOffset)
+
+        return (clampedOffset - endOffset)/(startOffset - endOffset)
     }
 
     var body: some View {
         VStack {
             ScrollView {
+                GeometryReader { geo in
+                    Color.clear
+                        .onChange(of: geo.frame(in: .global).minY) { minY in
+                            self.opacity = calculateOpacity(for: minY)
+                            print(opacity)
+                        }
+                }
+                .frame(height: 0)
                 Spacer(minLength: 50)
                 if let artist = artistViewModel.data {
                     if let images = artist.images {
@@ -32,6 +46,7 @@ struct ArtistView: View {
                                     image
                                         .resizable()
                                         .frame(width: 400, height: 400)
+                                        .opacity(self.opacity)
                                         .scaledToFill()
                                 case .empty:
                                     ProgressView()

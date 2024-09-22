@@ -34,8 +34,6 @@ struct LPView: View {
                                 } else {
                                     self.hideNavBar = false
                                 }
-                                
-                                print(hideNavBar)
                             }
                     }
                     .frame(height: 0)
@@ -284,7 +282,6 @@ struct LPView: View {
             }
             .navigationBarTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarHidden(true)
             .background(Color(red: 25/255, green: 25/255, blue: 25/255))
         }
     }

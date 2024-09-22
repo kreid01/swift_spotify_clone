@@ -13,7 +13,7 @@ struct User: Decodable {
     let name: String
     let likes: [String]
     let followedArtists: [String]
-    var likedAlbums: [String]
+    let likedAlbums: [String]
 }
 
 struct LikedSongsView: View {
