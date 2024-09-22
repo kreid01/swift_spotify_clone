@@ -10,17 +10,33 @@ struct LPView: View {
     @EnvironmentObject var pullsongViewModel: PullSongViewModel
 
     @State private var scrollViewOffset: CGFloat = 0
-
-    @State private var imageScale: CGFloat = 1
-
-    init(id: String) {
-        self.id = id
+    
+    @State private var hideNavBar: Bool = false
+    
+    func getScaleFor(minY: CGFloat) -> CGFloat {
+        let minYRange: CGFloat = 60 - -290 // Range from 60 to -290, total of 350
+        let currentOffset = min(max(minY, -290), 60) // Clamp minY between -290 and 60
+        let scale = (currentOffset + 290)/minYRange // Adjust the formula for negative range
+         
+        return scale // Scale value between 0 and 1
     }
-
+    
     var body: some View {
         ZStack {
             VStack {
                 ScrollView {
+                    GeometryReader { geo in
+                        Color.clear
+                            .onChange(of: geo.frame(in: .global).minY) { minY in
+                                self.scrollViewOffset = minY
+                                if minY <= 290 {
+                                    self.hideNavBar = false
+                                } else {
+                                    self.hideNavBar = false
+                                }
+                            }
+                    }
+                    .frame(height: 0)
                     Spacer(minLength: 100)
                     if let album = lpViewModel.data {
                         CacheAsyncImage(url: URL(string: album.images[0].url)!) {
@@ -30,15 +46,17 @@ struct LPView: View {
                                     image
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 260 * imageScale, height: 500 * imageScale)
+                                        .frame(width: 260, height: 500)
                                         .scaledToFit()
-
+                                        .scaleEffect(getScaleFor(minY: scrollViewOffset))
+                                        .animation(.easeInOut, value: scrollViewOffset)
+                                    
                                 case .empty:
                                     ProgressView()
-
+                                    
                                 case .failure:
                                     ProgressView()
-
+                                    
                                 @unknown default:
                                     fatalError()
                             }
@@ -55,7 +73,7 @@ struct LPView: View {
                             .fontWeight(.bold)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.leading, 20)
-
+                        
                         HStack {
                             ArtistImage(artistId: album.artists[0].id, height: 20, width: 20)
                                 .frame(width: 20, height: 20)
@@ -64,15 +82,15 @@ struct LPView: View {
                                     .foregroundStyle(.white)
                                     .fontWeight(.bold)
                             }
-
+                            
                             Spacer()
                         }.padding(.leading, 20)
-
+                        
                         Text("Album - \(album.release_date.prefix(4))")
                             .foregroundStyle(.gray)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.leading, 20)
-
+                        
                         HStack {
                             CacheAsyncImage(url: URL(string: album.images[2].url)!) {
                                 phase in
@@ -98,7 +116,7 @@ struct LPView: View {
                                         fatalError()
                                 }
                             }
-
+                            
                             HStack {
                                 if let user = userViewModel.data?.data {
                                     Image(systemName: user.likedAlbums.contains(id) ? "checkmark" : "plus.circle")
@@ -133,7 +151,7 @@ struct LPView: View {
                                                 input: UpdateLikedAlbum(albumId: id))
                                         }
                                 }
-
+                                
                                 Image(systemName: "arrow.down")
                                     .frame(width: 25, height: 25)
                                     .fontWeight(.bold)
@@ -141,22 +159,22 @@ struct LPView: View {
                                     .background(.green)
                                     .cornerRadius(20)
                                     .padding(.horizontal, 5)
-
+                                
                                 Image(systemName: "ellipsis")
                                     .frame(width: 30, height: 30)
                                     .fontWeight(.bold)
                                     .foregroundColor(.gray)
                                     .padding(.horizontal, 5)
                             }.offset(x: -20)
-
+                            
                             Spacer()
-
+                            
                             Image(systemName: "shuffle")
                                 .frame(width: 50, height: 50)
                                 .font(.system(size: 24))
                                 .fontWeight(.bold)
                                 .foregroundColor(.gray)
-
+                            
                             Image(systemName: "play.fill")
                                 .frame(width: 50, height: 50)
                                 .font(.system(size: 20))
@@ -165,7 +183,7 @@ struct LPView: View {
                                 .cornerRadius(30)
                                 .padding(.trailing, 25)
                         }.frame(maxWidth: .infinity, alignment: .leading)
-
+                        
                         ForEach(0 ..< album.tracks.total, id: \.self) { i in
                             HStack {
                                 VStack {
@@ -205,7 +223,7 @@ struct LPView: View {
                             .padding(.horizontal, 25)
                             .padding(.vertical, 8)
                         }
-
+                        
                         VStack {
                             Text(convertDateString(album.release_date)!)
                                 .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
@@ -221,7 +239,7 @@ struct LPView: View {
                         .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
                         .foregroundStyle(.white)
                         .padding(.leading, 25)
-
+                        
                         HStack {
                             Circle().frame(width: 50, height: 50)
                             Text(album.artists[0].name)
@@ -235,17 +253,17 @@ struct LPView: View {
                         .onAppear {
                             searchViewModel.fetch(url: "https://api.spotify.com/v1/search?q=artist:\(album.artists[0].name)&type=album")
                         }
-
+                        
                         HomeViewTitle(title: "More by \(album.artists[0].name)")
                         if let moreByAlbums = searchViewModel.data?.albums.items {
                             AlbumHGridView(albums: moreByAlbums)
                         }
-
+                        
                         HomeViewTitle(title: "You might also like")
                         if let alsoLikeByAlbums = searchViewModel.data?.albums.items {
                             AlbumHGridView(albums: alsoLikeByAlbums)
                         }
-
+                        
                         Text("\(album.copyrights[0].type) \(album.copyrights[0].text)")
                             .frame(maxWidth: /*@START_MENU_TOKEN@*/ .infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
                             .font(.system(size: 10))
@@ -255,17 +273,6 @@ struct LPView: View {
                     }
                 }
                 .background(Color(red: 25/255, green: 25/255, blue: 25/255))
-                .background(
-                    GeometryReader { geo in
-                        Color.clear
-                            .onAppear {
-                                scrollViewOffset = geo.frame(in: .global).minY
-                            }
-                            .onChange(of: geo.frame(in: .global).minY) { newValue in
-                                scrollViewOffset = newValue
-                                print(scrollViewOffset)
-                            }
-                    })
                 .frame(width: 400)
                 .padding(.bottom, 20)
                 .onAppear {
@@ -273,8 +280,11 @@ struct LPView: View {
                     userViewModel.fetch(url: "http://localhost:8080/users/1")
                 }
             }
-        }.navigationTitle("")
+            .navigationBarTitle(self.hideNavBar ? "" : lpViewModel.data?.name ?? "")
+            .navigationBarTitleDisplayMode(.inline)
             .background(Color(red: 25/255, green: 25/255, blue: 25/255))
+            .navigationBarHidden(self.hideNavBar)
+        }
     }
 }
 
